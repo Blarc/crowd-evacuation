@@ -1,2 +1,2 @@
-# collective-predator-evasion
-An implementation of collective predator evasion simulation.
+# crowd-evacuation
+An implementation of crowd-evacuation simulation.

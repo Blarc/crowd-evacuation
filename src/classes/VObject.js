@@ -4,7 +4,7 @@ class VObject {
         this.position = createVector(random(0, width), random(0, height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector(0, 0);
-        this.angle = degrees(baseVector.angleBetween(this.velocity));
+        this.angle = degrees(this.velocity.heading())
         this.size = 14;
     }
 
@@ -12,7 +12,7 @@ class VObject {
         this.checkVision()
         this.position.add(this.velocity);
         this.velocity.add(this.acceleration);
-        this.angle = degrees(baseVector.angleBetween(this.velocity));
+        this.angle = degrees(this.velocity.heading())
     }
 
     show() {
@@ -20,16 +20,18 @@ class VObject {
         strokeWeight(0)
         ellipse(this.position.x, this.position.y, this.size);
 
-        strokeWeight(0)
-        fill(255, 0, 0, 100)
-        arc(
-            this.position.x,
-            this.position.y,
-            Config.visionSize * 2,
-            Config.visionSize * 2,
-            radians(this.angle - Config.visionAngle),
-            radians(this.angle + Config.visionAngle)
-        )
+        if (this.velocity.x !== 0 || this.velocity.y !== 0) {
+            strokeWeight(0)
+            fill(255, 0, 0, 70)
+            arc(
+                this.position.x,
+                this.position.y,
+                Config.visionSize * 2,
+                Config.visionSize * 2,
+                radians(this.angle - Config.visionAngle),
+                radians(this.angle + Config.visionAngle)
+            )
+        }
 
         stroke(255, 0, 255);
         strokeWeight(1)
@@ -74,9 +76,10 @@ class VObject {
     }
 
     isInArc(point) {
-        // TODO mmarolt: This is not working correctly. Please fix it.
-        let angle = degrees(this.position.angleBetween(point))
+
+        let angle = degrees(this.velocity.angleBetween(p5.Vector.sub(point, this.position)))
         let distance = p5.Vector.dist(this.position, point)
-        return -Config.visionAngle <= angle <= Config.visionAngle && distance < Config.visionSize
+
+        return abs(angle) < Config.visionAngle && distance < Config.visionSize
     }
 }

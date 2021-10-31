@@ -8,16 +8,14 @@ function setup(){
     for (let i = 0; i < 20; i++) {
         vObjects.push(new VObject())
     }
-    vObjects.push(new VObject())
-
 }
 
 function draw() {
     background(51);
 
     for (let vObject of vObjects) {
-        vObject.show()
         vObject.update()
+        vObject.show()
     }
 }
 

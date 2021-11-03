@@ -1,0 +1,131 @@
+\documentclass[9pt]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment. 
+
+\RequirePackage[english,slovene]{babel} % when writing in slovene
+%\RequirePackage[slovene,english]{babel} % when writing in english
+
+\templatetype{pnasresearcharticle} % Choose template 
+% {pnasresearcharticle} = Template for a two-column research article
+% {pnasmathematics} = Template for a one-column mathematics article
+% {pnasinvited} = Template for a PNAS invited submission
+
+\selectlanguage{slovene}
+\etal{in sod.} % comment out when writing in english
+\renewcommand{\Authands}{ in } % comment out when writing in english
+\renewcommand{\Authand}{ in } % comment out when writing in english
+
+\newcommand{\set}[1]{\ensuremath{\mathbf{#1}}}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\uvec}[1]{\ensuremath{\hat{\vec{#1}}}}
+\newcommand{\const}[1]{{\ensuremath{\kappa_\mathrm{#1}}}} 
+
+\newcommand{\num}[1]{#1}
+
+\graphicspath{{./fig/}}
+
+\title{Modeliranje evakuacije ljudi pred napadalcem z uporabo mehke logike}
+
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author{Martin Božič}
+\author{Marija Marolt}
+\author{Jakob Maležič}
+
+\affil{Poročilo seminarske naloge pri predmetu Skupinsko vedenje} 
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{Novak} 
+
+\selectlanguage{english}
+
+% Please add here a significance statement to explain the relevance of your work
+\significancestatement{Crowd evacuation with Assailants via a Fuzzy logic approach}{TODO: Add english abstract?}{Collective behaviour | Crowd evacuation | Fuzzy logic}
+
+\selectlanguage{slovene}
+
+% Please include corresponding author, author contribution and author declaration information
+%\authorcontributions{Please provide details of author contributions here.}
+%\authordeclaration{Please declare any conflict of interest here.}
+%\equalauthors{\textsuperscript{1}A.O.(Author One) and A.T. (Author Two) contributed equally to this work (remove if not applicable).}
+%\correspondingauthor{\textsuperscript{2}To whom correspondence should be addressed. E-mail: author.two\@email.com}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+\keywords{Skupinsko vedenje | Evakuacija ljudi | Mehka logika } 
+
+\begin{abstract}
+%To sem na hitro nekaj nakracal
+Vsako leto se po celem svetu zgodi veliko napadov, kjer je ustreljenih in poškodovanih veliko ljudi. V tem članku, s pomočjo mehke logike, zgradimo različne modele, s katerimi lahko simuliramo takšne napade. Najprej predstavimo manjše modele, ki želijo doseči specifičen cilj - izogibanje oviram, iskanje poti in doseganje točke v prostoru. Te modele nato združimo v celoto tako, da jih ustrezno utežimo. Model testiramo in simuliramo v različnih prostorih z različnimi parametri. Za boljše razumevanje simulacije pripravimo tudi uporabniški vmesnik, ki simuliran napad vizualno prikaže. Naš model primerjamo še z ostalimi obstoječimi modeli.
+\end{abstract}
+
+\dates{\textbf{\today}}
+\program{BM-RI}
+\vol{2020/21}
+\no{CB:GB} % group ID
+%\fraca{FRIteza/201516.130}
+
+\begin{document}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+\verticaladjustment{-2pt}
+
+\maketitle
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+% If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
+\dropcap{Z}biranje velikih gruč ljudi na javnih mestih je postalo nekaj neizogibnega. Na avtobusnih postajah, na železniški postaji, v velikih trgovskih centrih ali pa na koncertih in tekmah. Slednje lahko predstavlja veliko nevarnost za ljudi, kot tudi velik izziv za organizatorje in nadzornike takšnih javnih prostorov.
+
+\section*{Metode}
+Za simulacijo gruč ljudi smo morali najprej pripraviti model za vodenje posameznega človeka kot tudi napadalca.
+
+V študijah (članek) so pokazali, da je vid glavni vir informacij, na podlagi katerih, se človek v kriznih situacijah odloča o svojih dejanjih. Zato smo tudi mi, zgradili takšne modele, ki se odločajo na podlagi okolice, ki jo posamezen človek vidi.
+
+\subsection*{Mehka logika}
+TODO: Dodaj metoda 1.
+
+\subsection*{Umikanje oviram}
+TODO: Dodaj metoda 2.
+
+\subsection*{Iskanje poti}
+Pri metodi iskanja poti, posamezne osebe, na spremembo trenutne hitrosti in smeri najbolj vplivajo hitrosti in smeri ostalih oseb, v vidnem spektru osebe. Na metodo iskanja poti, bi tako najbolj vplivala oseba, ki se proti izbrani osebi premika z veliko hitrostjo, v nasprotni smeri. Metoda vedno vodi posameznika po najvarnejši poti, skratka se vedno izogiba področjem z visoko negativno energijo. Moč negativne energije se izračunava sproti in je odvisna od trenutnega vpliva ovir in trenutne nevarnosti trčenja posameznika z ostalimi osebki. Kot vpliv ovire v večini upoštevamo zidove, pohištvo in ostale stacionarne reči v vidnem sektorju posameznika. Vpliv ovir označimo z oznako ${(OI^*)}$, pri čemer sistem mehke logike za izračun trenutnega vpliva ovir opišemo z naslednjo enačbo \ref{OI_equation}.
+
+\begin{equation}
+\label{OI_equation}
+OI^* = R_{1}(\phi^*_{oi}, d^*_{oi})
+\end{equation}
+
+Pri čemer ${\phi^*_{oi}}$ predstavlja, v katerem kotu vidnega spektra posameznika se ovira nahaja, ${d^*_{oi}}$ predstavlja razdaljo od posameznika do posamezne ovire. 
+
+
+\subsection*{Doseganja cilja}
+TODO: Dodaj metoda 3.
+
+\subsection*{Utežena vsota}
+TODO: Dodaj metoda 3.
+
+\subsection*{Uporabniški vmesnik}
+Uporabniški vmesnik bo narejen z uporabo knjižnice p5.js, ki temelji na jeziku Processing in bo prikazoval potek simulacije. Najprej bomo naredili nekaj simulacij v prostorih, ki bodo vnaprej pripravljeni. Nato bomo dodali možnost, da uporabnik sam nariše prostor, v katerem se simulacija izvede.
+
+\section*{Rezultati}
+Rezultati bodo predstavljeni s tabelami in grafi, kjer bomo primerjali različne modele evakuacije glede na število žrtev in čas evakuacije. 
+
+\section*{Sklep}
+% TODO: Dodaj sklep.
+
+\acknow{JN je napisal uvod in skrbel za jezik, MK je izvedel analizo podatkov in izdelal slike, IC je implementiral algoritem in pognal eksperimente.}
+\showacknow % Display the acknowledgments section
+
+% \pnasbreak splits and balances the columns before the references.
+% If you see unexpected formatting errors, try commenting out this line
+% as it can run into problems with floats and footnotes on the final page.
+%\pnasbreak
+
+\begin{multicols}{2}
+\section*{\bibname}
+% Bibliography
+\bibliography{./bib/bibliography}
+\end{multicols}
+
+\end{document}

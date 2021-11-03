@@ -5,7 +5,7 @@ function setup(){
     createCanvas(800, 600);
     baseVector = createVector(1, 0);
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 5; i++) {
         vObjects.push(new VObject())
     }
 }

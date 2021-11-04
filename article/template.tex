@@ -80,30 +80,114 @@ Vsako leto se po celem svetu zgodi veliko napadov, kjer je ustreljenih in poško
 \section*{Metode}
 Za simulacijo gruč ljudi smo morali najprej pripraviti model za vodenje posameznega človeka kot tudi napadalca.
 
-V študijah (članek) so pokazali, da je vid glavni vir informacij, na podlagi katerih, se človek v kriznih situacijah odloča o svojih dejanjih. Zato smo tudi mi, zgradili takšne modele, ki se odločajo na podlagi okolice, ki jo posamezen človek vidi.
+V študijah so pokazali, da je vid glavni vir informacij, na podlagi katerih, se človek v kriznih situacijah odloča o svojih dejanjih \cite{brcdp2018, mht2011}. Zato smo tudi mi, zgradili modele, ki se odločajo na podlagi okolice, ki jo človek lahko vidi.
 
 \subsection*{Mehka logika}
-TODO: Dodaj metoda 1.
+\label{mehka_logika}
+Informacija, ki jo ljudje pridobimo iz okolice je odvisna od našega zaznavanja sveta in v večini primerih ni odvisna od meritev. Kako pridobljena informacija vpliva na posameznika pa je težko določiti s količino, saj se zmožnost zaznavanja razlikuje med posamezniki. Zato je smiselno, da takšne \textbf{POJAVE} opišemo z besedami in ne izmerljivimi količinami. Slednje lažje opišemo z množico mehkih logik, ki jo je predstavil Zadeh \cite{ZADEH1965338} in se uporablja na različnih področjih. Največ se uporablja v odločilnih sistemih \cite{Dong2013}, pri ocenjevanju zmogljivosti \cite{HWWDGHJZN1969}, napovedovalnih kontrolnih sistemih \cite{en10060794} ipd. Metoda množice mehkih logik je tudi veliko bolj robustna pri uporabi netočnih in negotovih informacij, ki se jim pri sistemih, ki so odvisni od zaznavanja okolice, ne moremo izogniti.
 
-\subsection*{Umikanje oviram}
-TODO: Dodaj metoda 2.
+\subsection*{Lokalno izogibanje oviram}
+\label{lokalno_izogibanje_oviram}
+Metoda lokalnega izogibanje oviram poskrbi, da se osebe izognejo oviram, ki se nahajajo pred njimi in so dovolj blizu, da jih oseba zazna. Metoda deluje na podlagi vnaprej določenih pravil mehke logike. Vhode predstavljajo najbližje ovire v posameznih sektorjih vidnega polja, izhoda pa sta smer ($\alpha$) in hitrost gibanja ($V$). Vhodi so predstavljeni z mehko množico \{BLIZU, DALEČ\}, izhoda pa sta predstavljena z mehkima množicama \{Močno-Poz, Malo-Poz, Nič, Malo-Neg, Močno-Neg\} in \{USTAVITEV, POČASI, HITRO\}. Pravila mehke logike metode lokalnega izogibanja oviram lahko sedaj povzamemo z:
+\begin{equation}
+\label{lokalno_izogibanje_oviram_summarize}
+\begin{bmatrix}
+\delta_{\alpha}\\
+\delta_{V}
+\end{bmatrix} = R_{0} (d_{o}^l, d_{o}^fl, d_{o}^f, d_{o}^fr, d_{o}^r)
+\end{equation}
+
+Z opisanimi mehkimi množicami dobimo 32 (oziroma $2^5$) pravil ($R_0$), ki so opisana v tabeli \ref{rules_obstacle_avoidance_behaviour}.
+
+\begin{table}[]
+\centering
+\begin{tabular}{|l|lllll|ll|}
+\hline
+\textbf{Zap. št.} & \multicolumn{5}{l|}{\textbf{Vhod}} & \multicolumn{2}{l|}{\textbf{Izhod}} \\ 
+\cline{2-8} 
+\textbf{pravila} & ${d_l}$ & ${d_{fl}}$ & ${d_{fl}}$ & ${d_{fl}}$ & ${d_{fl}}$ & ${\alpha}$ & V \\ 
+\hline
+1   & BLIZU & BLIZU & BLIZU & BLIZU & BLIZU & Nič           & USTAVITEV  \\ \hline
+2   & BLIZU & BLIZU & BLIZU & BLIZU & DALEČ & Močno-Poz     & POČASI     \\ \hline
+3   & BLIZU & BLIZU & BLIZU & DALEČ & BLIZU & Malo-Poz      & POČASI     \\ \hline
+4   & BLIZU & BLIZU & BLIZU & DALEČ & BLIZU & Močno-Poz     & POČASI     \\ \hline
+5   & BLIZU & BLIZU & BLIZU & DALEČ & BLIZU & Nič           & HITRO      \\ \hline
+\dots & \dots  & \dots  & \dots  & \dots  & \dots  & \dots  & \dots      \\ \hline
+31  & DALEČ & DALEČ & DALEČ & DALEČ & BLIZU & Nič           & HITRO      \\ \hline
+32  & DALEČ & DALEČ & DALEČ & DALEČ & DALEČ & Nič           & HITRO      \\ \hline
+\end{tabular}
+\caption{Tabela predstavlja sistem pravil mehke logike pri metodi lokalnega izogibanja oviram.}
+\label{rules_obstacle_avoidance_behaviour}
+\end{table}
 
 \subsection*{Iskanje poti}
-Pri metodi iskanja poti, posamezne osebe, na spremembo trenutne hitrosti in smeri najbolj vplivajo hitrosti in smeri ostalih oseb, v vidnem spektru osebe. Na metodo iskanja poti, bi tako najbolj vplivala oseba, ki se proti izbrani osebi premika z veliko hitrostjo, v nasprotni smeri. Metoda vedno vodi posameznika po najvarnejši poti, skratka se vedno izogiba področjem z visoko negativno energijo. Moč negativne energije se izračunava sproti in je odvisna od trenutnega vpliva ovir in trenutne nevarnosti trčenja posameznika z ostalimi osebki. Kot vpliv ovire v večini upoštevamo zidove, pohištvo in ostale stacionarne reči v vidnem sektorju posameznika. Vpliv ovir označimo z oznako ${(OI^*)}$, pri čemer sistem mehke logike za izračun trenutnega vpliva ovir opišemo z naslednjo enačbo \ref{OI_equation}.
+\label{iskanje_poti}
+Pri metodi iskanja poti na spremembo trenutne hitrosti in smeri posamezne osebe najbolj vplivajo hitrosti in smeri ostalih oseb v vidnem spektru osebe. Tako bi pri metodi iskanja poti na trenutno osebo najbolj vplivala oseba, ki se proti izbrani osebi premika z veliko hitrostjo v nasprotni smeri. Metoda vedno vodi posameznika po najvarnejši poti, tako da se vedno izogiba področjem z visoko negativno energijo. Moč negativne energije se izračunava sproti in je odvisna od trenutnega vpliva ovir in trenutne nevarnosti trčenja posameznika z ostalimi osebami. Kot vpliv ovire v večini upoštevamo zidove, pohištvo in ostale stacionarne reči v vidnem sektorju posameznika. Vpliv ovir označimo z oznako ${(OI^*)}$, pri čemer sistem mehke logike za izračun trenutnega vpliva ovir opišemo z enačbo \ref{OI_equation}.
 
 \begin{equation}
 \label{OI_equation}
-OI^* = R_{1}(\phi^*_{oi}, d^*_{oi})
+OI_{i}^* = R_{1}(\phi^*_{oi}, d^*_{oi})
 \end{equation}
 
-Pri čemer ${\phi^*_{oi}}$ predstavlja, v katerem kotu vidnega spektra posameznika se ovira nahaja, ${d^*_{oi}}$ predstavlja razdaljo od posameznika do posamezne ovire. 
+${\phi^*_{oi}}$ predstavlja v katerem kotu vidnega spektra posameznika se ovira nahaja, ${d^*_{oi}}$ predstavlja razdaljo od posameznika do posamezne ovire in ${R_{1}}$ predstavlja zbirko pravil mehke logike.
+
+
+Nevarnost trčenja opazovane osebe z drugo osebo v prostoru označimo z oznako ${(CR^*)}$, pri čemer sistem mehke logike opišemo z enačbo \ref{CR_equation}.
+
+\begin{equation}
+\label{CR_equation}
+CR_{j}^* = R_{2}(d^*_{oi}, V_{j}^*, \theta_{pj}^*)
+\end{equation}
+
+${V_{j}^*}$ predstavlja trenutno hitrost j-te osebe, ${\theta_{pj}^*}$ predstavlja kot med smerjo gibanja j-te osebe glede na trenutno opazovano osebo in ${d^*_{pj}}$ predstavlja razdaljo od j-te osebe do trenutno opazovane osebe. ${R_{2}}$ predstavlja zbirko pravil mehke logike. Celotno negativno energijo trenutne opazovane osebe izračunamo z enačbo \ref{NE_equation},
+
+\begin{equation}
+\label{NE_equation}
+NE^* = k_{w} \cdot OI^* + (1 - k_{w}) \cdot CR^*
+\end{equation}
+
+, kjer ${OI^*}$ predstavlja vsoto vseh ${OI_{i}^*}$, za vsak predmet i v vidnem spektru osebe in ${CR^*}$ predstavlja vsoto vseh izračunanih nevarnosti trčenja ${CR_{j}^*}$, za vsako j-to osebo, ki se giblje v vidnem prostoru trenutne osebe. ${k_{w}}$ predstavlja faktor uteži, s katerim lahko nadziramo pomembnost vrednosti OI in CR.
 
 
 \subsection*{Doseganja cilja}
-TODO: Dodaj metoda 3.
+\label{doseganje_cilja}
+Pri metodi doseganja cilja, se opazovana oseba vedno nagiba k temu, da se pomika proti končnemu cilju. Opišemo jo z ${d_g}$, ki predstavlja razdaljo do cilja g in ${\gamma_{g}}$, ki predstavlja kot, glede na orientacijo trenutne osebe in smerjo cilja. Razdaljo ${d_g}$ opišemo z dvema \{BLIZU, DALEČ\}, kot ${\gamma_{g}}$ pa s petimi \{Močno-Neg, Malo-Neg, Nič, Malo-Poz, Močno-Poz\} stanji mehke logike. Sistem pravil mehke logike pri metodi doseganja cilja je predstavljen v tabeli \ref{rules_goal_seeking_behaviour}. Pri čemer ${\alpha}$ predstavlja končni kot in V predstavlja hitrost premika opazovane osebe.
+
+% \usepackage{multirow}
+\begin{table}[]
+\centering
+\begin{tabular}{|l|ll|ll|}
+\hline
+\textbf{Zap. št.} & \multicolumn{2}{l|}{\textbf{Vhod}} & \multicolumn{2}{l|}{\textbf{Izhod}} \\ \cline{2-5} 
+\textbf{pravila} & ${\gamma_{g}}$          & ${d_g}$          & ${\alpha}$           & V          \\ \hline
+1                            & Močno-Poz  & BLIZU & Močno-Neg  & USTAVITEV  \\ \hline
+2                            & Močno-Poz & DALEČ & Močno-Neg   &  POČASI           \\ \hline
+3                            & Malo-Poz &  BLIZU &   Malo-Neg   &  POČASI   \\ \hline
+4                            & Malo-Poz & DALEČ &  Malo-Neg  &  POČASI   \\ \hline
+5                            & Nič      &  BLIZU &  Nič    &   HITRO    \\ \hline
+6                            & Nič      & DALEČ  &  Nič    &   HITRO  \\ \hline
+7                            & Malo-Neg & BLIZU & Malo-Poz    &  POČASI   \\ \hline
+8                            & Malo-Neg & DALEČ & Malo-Poz   &  POČASI    \\ \hline
+9                            & Močno-Neg & BLIZU &  Močno-Poz   & USTAVITEV \\ \hline
+10                           & Močno-Neg & DALEČ  &  Močno-Poz   &  POČASI   \\ \hline
+\end{tabular}
+\caption{Tabela predstavlja sistem pravil mehke logike pri metodi doseganja cilja.}
+\label{rules_goal_seeking_behaviour}
+\end{table}
 
 \subsection*{Utežena vsota}
-TODO: Dodaj metoda 3.
+Končno hitrost V in končni kot premika ${\alpha}$ trenutne osebe izračunamo z metodo utežene vsote rezultatov metode umikanja oviram \ref{umikanje_oviram}, metode iskanja poti \ref{iskanje_poti} in metode doseganja cilja \ref{doseganje_cilja}. Pomembnost rezultata vsake metode utežimo s faktorji ${\delta_{ao}}$, ${\delta_{ap}}$ in ${\delta_{ag}}$, ki sproti utežujejo pomembnost vsake posamezne metode mehke logike. Vsak faktor opišemo s tremi stanji mehke logike, \{MANJŠI, SREDNJI, VELIK\}. Vrednosti faktorjev določamo sproti po enačbi \ref{delta_equation},
+
+\begin{equation}
+\label{delta_equation}
+\begin{bmatrix}
+\delta_{ao}\\
+\delta_{ap}\\
+\delta_{ag}
+\end{bmatrix} = R_{5} (d_{o}^f, \overline{NE^f}, d_{g})
+\end{equation}
+
+pri čemer ${d_{o}^f}$ predstavlja razdalijo do ovire, ki stoji pred opazovano osebo, ${\overline{NE^f}}$ predstavlja velikost negativne energije, v prostoru pred opazovano osebo, in ${d_{g}}$ predstavlja razdaljo od trenutno opazovane osebe do cilja. ${R_{5}}$ predstavlja nabor pravil mehke logike. 
 
 \subsection*{Uporabniški vmesnik}
 Uporabniški vmesnik bo narejen z uporabo knjižnice p5.js, ki temelji na jeziku Processing in bo prikazoval potek simulacije. Najprej bomo naredili nekaj simulacij v prostorih, ki bodo vnaprej pripravljeni. Nato bomo dodali možnost, da uporabnik sam nariše prostor, v katerem se simulacija izvede.

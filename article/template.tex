@@ -75,12 +75,27 @@ Vsako leto se po celem svetu zgodi veliko napadov, kjer je ustreljenih in poško
 \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
 
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
-\dropcap{Z}biranje velikih gruč ljudi na javnih mestih je postalo nekaj neizogibnega. Na avtobusnih postajah, na železniški postaji, v velikih trgovskih centrih ali pa na koncertih in tekmah. Slednje lahko predstavlja veliko nevarnost za ljudi, kot tudi velik izziv za organizatorje in nadzornike takšnih javnih prostorov.
+\dropcap{Z}biranje velikih gruč ljudi na javnih mestih je postalo nekaj neizogibnega. Na avtobusnih postajah, na železniški postaji, v velikih trgovskih centrih ali pa na koncertih in tekmah. Slednje lahko predstavlja veliko nevarnost za ljudi, kot tudi velik izziv za organizatorje in nadzornike takšnih javnih prostorov. Posebno pozornost je vredno nameniti predvidevanju potencialnih kriznih situacij, pri katerih je treba upoštevati nerazumno vedenje množice, ki nastopi kot posledica tesnobe in panike. V tem obziru je ključnega pomena razumevanje in razlikovanje značilnosti vedenja ljudi v običajnih ter kriznih situacijah.
+
+Pri analizi dosedanjih napadov na množice, kot so streljanje v šolah~\cite{shootingWiki} in teroristični napadi na železniške postaje~\cite{CunmingWiki}, je prišlo do nekaj pomembnih spoznanj. Iracionalno evakuacijsko vedenje, slaba presoja varnosti stanovalcev ter malomarnost in nerazumne arhitekturne odločitve so vidno povečali škodo povzročenih napadov.
+
+Preučevanje evakuacije množice vključuje lahko temelji na realnih poskusih ali računalniški simulaciji. Izvedeni so bili poskusi evakuacije pri zastoju na hodniku~\cite{bottlenecks2005}, v učilnici~\cite{classroom2008} ter nebotičniku~\cite{building2012}, ki so razkrili nekaj tipičnih vedenjskih vzorcev pri evakuaciji, kot so na primer tvorjenje vrst po principu zadrge~\cite{bottlenecks2005}, prilaščanje izhoda in čas priprave na evakuacijo~\cite{classroom2008}. V zadnjih nekaj desetletjih se vse bolj uporablja različne simulacijske modele. Helbing~\cite{Helbing2000} je predstavil model, ki simulira obnašanje ljudi v paniki pri evakuaciji. Pojasnil je zakaj pride do zastojev in poiskal optimalno rešitev. Varas~\cite{Varas2007} je uporabil model za odločanje s celičnim avtomatom za evakuacije sobe z ovirami. Upošteval je nerazumno vedenje v primeru panike in ob srečanju z oviro dodal faktor naključnosti reakcije v naslednjem koraku. Liu~\cite{Liu2009} je kasneje model nekoliko prilagodil. Obravnaval je tudi gostoto ljudi okoli izhoda. Poleg omenjenih so bili za preučevanje tega področja uporabljeni tudi drugi modeli. Izkazalo se je, da so rezultati močno odvisni od situacije in okolja.
+
+
 
 \section*{Metode}
 Za simulacijo gruč ljudi smo morali najprej pripraviti model za vodenje posameznega človeka kot tudi napadalca.
 
 V študijah so pokazali, da je vid glavni vir informacij, na podlagi katerih, se človek v kriznih situacijah odloča o svojih dejanjih \cite{brcdp2018, mht2011}. Zato smo tudi mi, zgradili modele, ki se odločajo na podlagi okolice, ki jo človek lahko vidi.
+
+V osnovi ljudi razdelimo v tri kategorije. V tretjo kategorijo uvrščamo vse ljudi, kateri se v trenutni situaciji še ne zavedajo prisotnosti napadalca. Takoj, ko se ti ljudje zavedajo napadalca, v svojem vidnem polju ga pa še ne vidijo, preidejo v drugo kategorijo. V prvo kategorijo pa uvrščamo vse ljudi, ki napadalca vidijo, ali pa so ga videli v bližnji preteklosti in so s tem v napadalčevi neposredni nevarnosti. Ko človek enkrat preide v prvo ali drugo kategorijo, v trenutni simulaciji več ne more preiti v tretjo kategorijo ljudi.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{fig/vision_field.PNG}
+	\caption{Vidno polje osebe, ki je razdeljeno na sektorje.}
+	\label{fig:vision_field}
+\end{figure}
 
 \subsection*{Mehka logika}
 \label{mehka_logika}
@@ -193,12 +208,12 @@ pri čemer ${d_{o}^f}$ predstavlja razdalijo do ovire, ki stoji pred opazovano o
 Uporabniški vmesnik bo narejen z uporabo knjižnice p5.js, ki temelji na jeziku Processing in bo prikazoval potek simulacije. Najprej bomo naredili nekaj simulacij v prostorih, ki bodo vnaprej pripravljeni. Nato bomo dodali možnost, da uporabnik sam nariše prostor, v katerem se simulacija izvede.
 
 \section*{Rezultati}
-Rezultati bodo predstavljeni s tabelami in grafi, kjer bomo primerjali različne modele evakuacije glede na število žrtev in čas evakuacije. 
+Rezultati bodo predstavljeni s tabelami in grafi, kjer bomo primerjali različne modele evakuacije glede na število žrtev in čas evakuacije. Simulacije bomo izvedli v prostorih različnih oblik in s tem primerjali uspešnost različnih oblik stavb, namenjenih zbiranju velikih količin ljudi, v situacijah evakuacije. Upamo, da bomo s pomočjo tega znanja lahko določili par smernic pri gradnji velikih objektov.
 
 \section*{Sklep}
 % TODO: Dodaj sklep.
 
-\acknow{JN je napisal uvod in skrbel za jezik, MK je izvedel analizo podatkov in izdelal slike, IC je implementiral algoritem in pognal eksperimente.}
+%\acknow{JN je napisal uvod in skrbel za jezik, MK je izvedel analizo podatkov in izdelal slike, IC je implementiral algoritem in pognal eksperimente.}
 \showacknow % Display the acknowledgments section
 
 % \pnasbreak splits and balances the columns before the references.

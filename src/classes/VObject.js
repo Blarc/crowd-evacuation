@@ -62,7 +62,7 @@ class VObject {
 
             if (this !== other) {
                 this.arcs.forEach(arc => {
-                    if (arc.isInArc(this.velocity, other.pos)) {
+                    if (arc.isPointInArc(this.velocity, other.pos)) {
                         arc.color = [255, 0, 0, 200]
                         let distance = p5.Vector.dist(this.pos, other.pos)
 

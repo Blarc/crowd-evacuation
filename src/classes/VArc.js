@@ -26,13 +26,15 @@ class VArc {
             heading + this.startVisionAngle,
             heading + this.endVisionAngle
         )
-
-
-        stroke(255, 0, 255);
-        strokeWeight(1)
     }
 
-    isInArc(direction, point) {
+    /**
+     * Checks if point is in arc
+     * @param {p5.Vector} direction of the arc
+     * @param {p5.Vector} point to be checked
+     * @returns {boolean} whether arc contains the point
+     */
+    isPointInArc(direction, point) {
         let a = atan2(point.y - this.pos.y, point.x - this.pos.x) + PI
         let r = p5.Vector.dist(this.pos, point)
 
@@ -52,5 +54,30 @@ class VArc {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if circle is in arc
+     * @param {p5.Vector} direction of the arc
+     * @param {p5.Vector} point middle of the circle
+     * @param {number} r radius of the circle
+     * @returns {boolean} whether arc contains the circle
+     */
+    isCircleInArc(direction, point, r) {
+        // TODO: Implement this function
+        return this.isPointInArc(direction, point)
+    }
+
+    /**
+     * Checks if rect is in arc
+     * @param {p5.Vector} direction of the arc
+     * @param {p5.Vector} point top-left corner of the rectangle
+     * @param {number} w rectangle's width
+     * @param {number} h rectangle's height
+     * @returns {boolean} whether arc contains the rectangle
+     */
+    isRectInArc(direction, point, w, h) {
+        // TODO: Implement this function
+        return this.isPointInArc(direction, point)
     }
 }

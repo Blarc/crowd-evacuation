@@ -1,7 +1,6 @@
 class VArc {
-    constructor(position, direction, startVisionAngle, endVisionAngle, visionSize, label) {
-        this.position = position;
-        this.direction = direction;
+    constructor(position, startVisionAngle, endVisionAngle, visionSize, label) {
+        this.pos = position;
         this.startVisionAngle = radians(startVisionAngle);
         this.endVisionAngle = radians(endVisionAngle);
         this.visionSize = visionSize;
@@ -9,12 +8,8 @@ class VArc {
         this.color = null;
     }
 
-    update(direction) {
-        this.direction = direction;
-    }
-
-    show() {
-        let heading = this.direction.heading();
+    show(direction) {
+        let heading = direction.heading();
         noStroke()
         if (this.color) {
             fill(this.color)
@@ -24,8 +19,8 @@ class VArc {
             fill(this.label.color)
         }
         arc(
-            this.position.x,
-            this.position.y,
+            this.pos.x,
+            this.pos.y,
             this.visionSize * 2,
             this.visionSize * 2,
             heading + this.startVisionAngle,
@@ -37,12 +32,12 @@ class VArc {
         strokeWeight(1)
     }
 
-    isInArc(point) {
-        let a = atan2(point.y - this.position.y, point.x - this.position.x) + PI
-        let r = p5.Vector.dist(this.position, point)
+    isInArc(direction, point) {
+        let a = atan2(point.y - this.pos.y, point.x - this.pos.x) + PI
+        let r = p5.Vector.dist(this.pos, point)
 
-        let s = (this.direction.heading() + this.startVisionAngle + PI) % TWO_PI
-        let e = (this.direction.heading() + this.endVisionAngle + PI) % TWO_PI
+        let s = (direction.heading() + this.startVisionAngle + PI) % TWO_PI
+        let e = (direction.heading() + this.endVisionAngle + PI) % TWO_PI
 
         if (r < this.visionSize) {
             if (s < e) {
@@ -57,13 +52,5 @@ class VArc {
             }
         }
         return false;
-    }
-
-    getVisionVector(alpha) {
-        let tmp = this.direction
-            .copy()
-            .setMag(Config.visionSize)
-            .rotate(radians(alpha));
-        return p5.Vector.add(this.position, tmp)
     }
 }

@@ -1,3 +1,4 @@
 class Config {
-    static visionSize = 80;
+    static visionSize = 30;
+    static objectSize = 5;
 }

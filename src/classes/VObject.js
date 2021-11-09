@@ -1,86 +1,91 @@
 class VObject {
 
-    constructor(obstacleAvoidance) {
-        this.position = createVector(random(100, width - 100), random(100, height - 100));
-        this.velocity = p5.Vector.random2D();
-        this.velocity.setMag(0.5)
-        this.velocityMag = 1.0
-        this.size = 14;
+    constructor(x, y, size, visionSize, obstacleAvoidance) {
+        this.pos = createVector(x, y)
+        this.size = size
+        this.visionSize = visionSize
         this.obstacleAvoidance = obstacleAvoidance
 
+        this.velocity = p5.Vector.random2D()
+        this.velocity.setMag(0.5)
+        this.velocityMag = 1.0
+
         this.arcs = [
-            new VArc(this.position, this.velocity, -275, -85, Config.visionSize / 2, VArcLabelEnum.BACK),
-            new VArc(this.position, this.velocity, -85, -45, Config.visionSize, VArcLabelEnum.LEFT),
-            new VArc(this.position, this.velocity, -45, -15, Config.visionSize, VArcLabelEnum.FRONT_LEFT),
-            new VArc(this.position, this.velocity, -15, 15, Config.visionSize, VArcLabelEnum.FRONT),
-            new VArc(this.position, this.velocity, 15, 45, Config.visionSize, VArcLabelEnum.FRONT_RIGHT),
-            new VArc(this.position, this.velocity, 45, 85, Config.visionSize, VArcLabelEnum.RIGHT),
+            // Temporarily removed BACK arc
+            // new VArc(this.position, -275, -85, Config.visionSize / 2, VArcLabelEnum.BACK),
+            new VArc(this.pos, -85, -45, this.visionSize, VArcLabelEnum.LEFT),
+            new VArc(this.pos, -45, -15, this.visionSize, VArcLabelEnum.FRONT_LEFT),
+            new VArc(this.pos, -15, 15, this.visionSize, VArcLabelEnum.FRONT),
+            new VArc(this.pos, 15, 45, this.visionSize, VArcLabelEnum.FRONT_RIGHT),
+            new VArc(this.pos, 45, 85, this.visionSize, VArcLabelEnum.RIGHT),
         ]
     }
 
     update() {
+        // TODO Instead of checking for boundaries, add obstacles at the edges of the room
         this.checkBoundaries()
 
-        let distancesBySector = [Infinity, Infinity, Infinity, Infinity, Infinity]
-
-        let inRadius = []
-        vObjects.forEach(vObject => {
-            let distance = p5.Vector.dist(this.position, vObject.position)
-            if (this !== vObject && distance < Config.visionSize) {
-                inRadius.push(vObject)
-            }
-        })
-
-        this.arcs.forEach(arc => {
-            arc.update(this.velocity)
-
-            inRadius.forEach(vObject => {
-                if (vObject !== this) {
-                    if (arc.isInArc(vObject.position)) {
-                        arc.color = [255, 0, 0, 200]
-                        if (arc.label !== VArcLabelEnum.BACK) {
-                            let distance = p5.Vector.dist(this.position, vObject.position)
-
-                            if (distance < distancesBySector[arc.label.id]) {
-                                distancesBySector[arc.label.id] = distance
-                            }
-                        }
-                    }
-                }
-            })
-        })
+        let distancesByArc = this.checkCollision();
 
         if (this.obstacleAvoidance) {
-            let [a, V] = this.obstacleAvoidance.getOutput(distancesBySector)
+            let [a, V] = this.obstacleAvoidance.getOutput(distancesByArc)
             this.velocity.rotate(radians(a))
             this.velocityMag = V
         }
 
-        this.position.add(this.velocity.copy().setMag(this.velocityMag));
+        this.pos.add(this.velocity.copy().setMag(this.velocityMag));
 
     }
 
     show() {
         fill(255);
         noStroke();
-        ellipse(this.position.x, this.position.y, this.size);
+        ellipse(this.pos.x, this.pos.y, this.size);
 
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.arcs.forEach(arc => {
-                arc.show()
+                arc.show(this.velocity)
             })
         }
     }
 
+    getRange() {
+        return new Circle(this.pos.x, this.pos.y, Config.visionSize)
+    }
+
+    checkCollision() {
+        let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity]
+        let points = quadTree.query(this.getRange())
+
+        for (let point of points) {
+            let other = point.userData
+
+            if (this !== other) {
+                this.arcs.forEach(arc => {
+                    if (arc.isInArc(this.velocity, other.pos)) {
+                        arc.color = [255, 0, 0, 200]
+                        let distance = p5.Vector.dist(this.pos, other.pos)
+
+                        if (distance < distancesByArc[arc.label.id]) {
+                            distancesByArc[arc.label.id] = distance
+                        }
+                    }
+                })
+            }
+        }
+
+        return distancesByArc
+    }
+
     checkBoundaries() {
-        if (this.position.x - Config.visionSize < 0 ||
-            this.position.x + Config.visionSize > width ||
-            this.position.y - Config.visionSize < 0 ||
-            this.position.y + Config.visionSize > height
+        if (this.pos.x - Config.visionSize < 0 ||
+            this.pos.x + Config.visionSize > width ||
+            this.pos.y - Config.visionSize < 0 ||
+            this.pos.y + Config.visionSize > height
         ) {
             this.velocity = createVector(-this.velocity.x, -this.velocity.y);
             // Make sure it doesn't get stuck
-            this.position.add(this.velocity.copy().setMag(this.velocityMag));
+            this.pos.add(this.velocity.copy().setMag(this.velocityMag));
         }
     }
 }

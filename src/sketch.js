@@ -2,6 +2,7 @@ let quadTree;
 const vObjects = [];
 
 let baseVector;
+var pause = false;
 
 function setup(){
     createCanvas(600, 400);
@@ -15,13 +16,17 @@ function setup(){
     let distanceIO = new IODistance(Config.visionSize, Config.visionSize)
     let obstacleAvoidance = new ObstacleAvoiding(speedIO, angleIO, distanceIO)
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < Config.numberOfPessengers; i++) {
         let x = random(50, width - 50)
         let y = random(50, height - 50)
 
         let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance);
         vObjects.push(vObject)
     }
+}
+
+function pauseSimulation() {
+    pause = !pause;
 }
 
 function draw() {
@@ -42,6 +47,11 @@ function draw() {
 
 function mousePressed() {
     // TODO
+}
+
+function keyPressed() {
+    // pause/unpause if space is pressed
+    keyCode == 32 && pauseSimulation();
 }
 
 function windowResized() {

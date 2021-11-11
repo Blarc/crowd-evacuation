@@ -33,6 +33,15 @@ class VObject {
             this.velocityMag = V
         }
 
+        if (this.checkCollisionWithOtherPlayer()) {
+            for (let i = 0; i < distancesByArc.length; i++) {
+                if (distancesByArc[i] <= this.obstacleAvoidance.d.NEAR) {
+                    this.velocityMag = this.obstacleAvoidance.s.STOP;
+                    this.velocity.rotate(radians(this.obstacleAvoidance.a.LARGE_NEG))
+                }
+            }
+        }
+
         this.pos.add(this.velocity.copy().setMag(this.velocityMag));
 
     }
@@ -75,6 +84,22 @@ class VObject {
         }
 
         return distancesByArc
+    }
+
+    checkCollisionWithOtherPlayer() {
+        let points = quadTree.query(this.getRange())
+
+        for (let point of points) {
+            let other = point.userData
+
+            if (this !== other) {
+                if (Math.pow((other.pos.x-this.pos.x), 2) + Math.pow((other.pos.y-this.pos.y), 2) <= Math.pow((this.size / 2 + other.size / 2), 2)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     checkBoundaries() {

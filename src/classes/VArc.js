@@ -26,10 +26,6 @@ class VArc {
             heading + this.startVisionAngle,
             heading + this.endVisionAngle
         )
-
-
-        stroke(255, 0, 255);
-        strokeWeight(1)
     }
 
     /**

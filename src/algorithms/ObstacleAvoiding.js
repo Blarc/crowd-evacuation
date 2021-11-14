@@ -1,8 +1,8 @@
 class ObstacleAvoiding {
     constructor(speedIO, angleIO, distanceIO) {
-        this.s = speedIO
-        this.a = angleIO
-        this.d = distanceIO
+        this.s = speedIO;
+        this.a = angleIO;
+        this.d = distanceIO;
     }
 
     /*
@@ -20,104 +20,103 @@ class ObstacleAvoiding {
             }
         }
 
-        // TODO: Reduce this
         switch (ruleNumber) {
             // near, near, near, near, near
             case 0:
-                return [this.a.ZERO, this.s.STOP]
+                return [this.a.ZERO, this.s.STOP];
             // far, near, near, near, near
             case 1:
-                return [this.a.LARGE_NEG, this.s.SLOW]
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // near, far, near, near, near
             case 2:
-                return [this.a.SMALL_NEG, this.s.SLOW]
+                return [this.a.SMALL_NEG, this.s.SLOW];
             // far, far, near, near, near
             case 3:
-                return [this.a.LARGE_NEG, this.s.SLOW]
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // near, near, far, near, near
             case 4:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, near, far, near, near
             case 5:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, far, far, near, near
             case 6:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, far, far, near, near
             case 7:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, near, near, far, near
             case 8:
-                return [this.a.SMALL_POS, this.s.SLOW]
+                return [this.a.SMALL_POS, this.s.SLOW];
             // far, near, near, far, near
             case 9:
-                return [this.a.SMALL_POS, this.s.SLOW]
+                return [this.a.SMALL_POS, this.s.SLOW];
             // near, far, near, far, near
             case 10:
-                return randomIntFromInterval(0,1) == 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW];
             // far, far, near, far, near
             case 11:
-                return [this.a.LARGE_NEG, this.s.SLOW]
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // near, near, far, far, near
             case 12:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, near, far, far, near
             case 13:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, far, far, far, near
             case 14:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, far, far, far, near
             case 15:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, near, near, near, far
             case 16:
-                return [this.a.LARGE_POS, this.s.SLOW]
+                return [this.a.LARGE_POS, this.s.SLOW];
             // far, near, near, near, far
             case 17:
-                return randomIntFromInterval(0,1) == 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
             // near, far, near, near, far
             case 18:
-                return [this.a.SMALL_NEG, this.s.SLOW]
+                return [this.a.SMALL_NEG, this.s.SLOW];
             // far, far, near, near, far
             case 19:
-                return [this.a.LARGE_NEG, this.s.SLOW]
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // near, near, far, near, far
             case 20:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, near, far, near, far
             case 21:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, far, far, near, far
             case 22:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, far, far, near, far
             case 23:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, near, near, far, far
             case 24:
-                return [this.a.LARGE_POS, this.s.SLOW]
+                return [this.a.LARGE_POS, this.s.SLOW];
             // far, near, near, far, far
             case 25:
-                return [this.a.LARGE_POS, this.s.SLOW]
+                return [this.a.LARGE_POS, this.s.SLOW];
             // near, far, near, far, far
             case 26:
-                return [this.a.LARGE_POS, this.s.SLOW]
+                return [this.a.LARGE_POS, this.s.SLOW];
             // far, far, near, far, far
             case 27:
-                return randomIntFromInterval(0,1) == 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
             // near, near, far, far, far
             case 28:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, near, far, far, far
             case 29:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // near, far, far, far, far
             case 30:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
             // far, far, far, far, far
             default:
-                return [this.a.ZERO, this.s.FAST]
+                return [this.a.ZERO, this.s.FAST];
         }
     }
 }

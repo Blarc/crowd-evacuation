@@ -2,46 +2,42 @@ let quadTree;
 const vObjects = [];
 
 let baseVector;
-var pause = false;
+let pause = false;
 
 function setup(){
     createCanvas(600, 400);
     baseVector = createVector(1, 0);
 
     // Create quadtree as big as the room
-    quadTree = QuadTree.create()
+    quadTree = QuadTree.create();
 
-    let speedIO = new IOSpeed(0.2, 0.5)
-    let angleIO = new IOAngle(-60, -30, 30, 60)
-    let distanceIO = new IODistance(Config.visionSize, Config.visionSize)
-    let obstacleAvoidance = new ObstacleAvoiding(speedIO, angleIO, distanceIO)
+    let speedIO = new IOSpeed(0.2, 0.5);
+    let angleIO = new IOAngle(-10, -5, 5, 10);
+    let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
+    let obstacleAvoidance = new ObstacleAvoiding(speedIO, angleIO, distanceIO);
 
-    for (let i = 0; i < Config.numberOfPessengers; i++) {
-        let x = random(50, width - 50)
-        let y = random(50, height - 50)
+    for (let i = 0; i < Config.numberOfObjects; i++) {
+        let x = random(50, width - 50);
+        let y = random(50, height - 50);
 
         let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance);
-        vObjects.push(vObject)
+        vObjects.push(vObject);
     }
 }
 
-function pauseSimulation() {
-    pause = !pause;
-}
-
 function draw() {
-    quadTree = QuadTree.create()
+    quadTree = QuadTree.create();
 
     background(51);
 
     for (let vObject of vObjects) {
-        let point = new Point(vObject.pos.x, vObject.pos.y, vObject)
-        quadTree.insert(point)
+        let point = new Point(vObject.pos.x, vObject.pos.y, vObject);
+        quadTree.insert(point);
     }
 
     for (let vObject of vObjects) {
-        vObject.show()
-        vObject.update()
+        vObject.show();
+        vObject.update();
     }
 }
 
@@ -51,7 +47,10 @@ function mousePressed() {
 
 function keyPressed() {
     // pause/unpause if space is pressed
-    keyCode == 32 && pauseSimulation();
+    if (keyCode === 32) {
+        pause ? loop() : noLoop();
+        pause = !pause;
+    }
 }
 
 function windowResized() {

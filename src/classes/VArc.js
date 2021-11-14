@@ -10,14 +10,16 @@ class VArc {
 
     show(direction) {
         let heading = direction.heading();
-        noStroke()
+        noStroke();
+
         if (this.color) {
-            fill(this.color)
-            this.color = null
+            fill(this.color);
+            this.color = null;
         }
         else {
-            fill(this.label.color)
+            fill(this.label.color);
         }
+
         arc(
             this.pos.x,
             this.pos.y,
@@ -25,7 +27,7 @@ class VArc {
             this.visionSize * 2,
             heading + this.startVisionAngle,
             heading + this.endVisionAngle
-        )
+        );
     }
 
     /**
@@ -35,11 +37,11 @@ class VArc {
      * @returns {boolean} whether arc contains the point
      */
     isPointInArc(direction, point) {
-        let a = atan2(point.y - this.pos.y, point.x - this.pos.x) + PI
-        let r = p5.Vector.dist(this.pos, point)
+        let a = atan2(point.y - this.pos.y, point.x - this.pos.x) + PI;
+        let r = p5.Vector.dist(this.pos, point);
 
-        let s = (direction.heading() + this.startVisionAngle + PI) % TWO_PI
-        let e = (direction.heading() + this.endVisionAngle + PI) % TWO_PI
+        let s = (direction.heading() + this.startVisionAngle + PI) % TWO_PI;
+        let e = (direction.heading() + this.endVisionAngle + PI) % TWO_PI;
 
         if (r < this.visionSize) {
             if (s < e) {
@@ -65,7 +67,7 @@ class VArc {
      */
     isCircleInArc(direction, point, r) {
         // TODO: Implement this function
-        return this.isPointInArc(direction, point)
+        return this.isPointInArc(direction, point);
     }
 
     /**
@@ -78,6 +80,10 @@ class VArc {
      */
     isRectInArc(direction, point, w, h) {
         // TODO: Implement this function
-        return this.isPointInArc(direction, point)
+        return this.isPointInArc(direction, point);
+    }
+
+    highlight() {
+        this.color = [255, 0, 0, 200];
     }
 }

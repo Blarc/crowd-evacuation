@@ -1,13 +1,13 @@
 let quadTree;
 const vObjects = [];
+const vWalls = [];
 
 let baseVector;
 let pause = false;
 let goal;
 
 function setup(){
-    createCanvas(600, 400);
-
+    createCanvas(Config.windowWidth, Config.windowHeight);
     baseVector = createVector(1, 0);
     goal = createVector(random(50, width - 50), random(50, height - 50))
 
@@ -24,9 +24,37 @@ function setup(){
         let x = random(50, width - 50);
         let y = random(50, height - 50);
 
-        let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance, goalSeeking);
+        let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance, null);
         vObjects.push(vObject);
     }
+
+    this.createWallBoundaries();
+}
+
+function createWallBoundaries() {
+
+    // place bricks top-down
+    let curHeightPos = 0;
+    while (curHeightPos <= Config.windowHeight - Config.basicWallBrickHeight) {
+        let vWallLeft = new VWall(0 + Config.basicWallBrickWidth / 2, curHeightPos + Config.basicWallBrickHeight / 2, Config.basicWallBrickWidth, Config.basicWallBrickHeight);
+        let vWallRight = new VWall(Config.windowWidth - Config.basicWallBrickWidth + Config.basicWallBrickWidth / 2, curHeightPos + Config.basicWallBrickHeight / 2, Config.basicWallBrickWidth, Config.basicWallBrickHeight);
+        vWalls.push(vWallLeft);
+        vWalls.push(vWallRight);
+
+        curHeightPos += Config.basicWallBrickHeight;
+    }
+
+    // place bricks left-right
+    let curWidthPos = 0;
+    while (curWidthPos <= Config.windowWidth - Config.basicWallBrickWidth) {
+        let vWallTop = new VWall(curWidthPos + Config.basicWallBrickWidth / 2, 0 + Config.basicWallBrickHeight / 2, Config.basicWallBrickWidth, Config.basicWallBrickHeight);
+        let vWallBottom = new VWall(curWidthPos + Config.basicWallBrickWidth / 2, Config.windowHeight - Config.basicWallBrickHeight + Config.basicWallBrickHeight / 2, Config.basicWallBrickWidth, Config.basicWallBrickHeight);
+        vWalls.push(vWallTop);
+        vWalls.push(vWallBottom);
+
+        curWidthPos += Config.basicWallBrickWidth;
+    }
+
 }
 
 function draw() {
@@ -36,6 +64,13 @@ function draw() {
 
     for (let vObject of vObjects) {
         let point = new Point(vObject.pos.x, vObject.pos.y, vObject);
+        quadTree.insert(point);
+    }
+
+    for (let vWall of vWalls) {
+        vWall.show();
+
+        let point = new Point(vWall.pos.x, vWall.pos.y, vWall);
         quadTree.insert(point);
     }
 

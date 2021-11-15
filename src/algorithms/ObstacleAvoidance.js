@@ -23,7 +23,7 @@ class ObstacleAvoidance {
         switch (ruleNumber) {
             // near, near, near, near, near
             case 0:
-                return [this.a.ZERO, this.s.STOP];
+                return [this.a.LARGE_NEG, this.s.STOP];
             // far, near, near, near, near
             case 1:
                 return [this.a.LARGE_NEG, this.s.SLOW];

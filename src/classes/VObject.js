@@ -23,8 +23,6 @@ class VObject {
     }
 
     update() {
-        // TODO Instead of checking for boundaries, add obstacles at the edges of the room
-        this.checkBoundaries();
         this.checkGoal();
 
         let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity];
@@ -33,7 +31,20 @@ class VObject {
         for (let point of points) {
             let other = point.userData;
 
-            if (this !== other) {
+            if (other instanceof VWall) {
+                this.arcs.forEach(arc => {
+                    let intersectionPoint = arc.isRectInArc(this.velocity, other.pos, other.width, other.height)
+                    if (intersectionPoint) {
+                        arc.highlight();
+
+                        let distance = p5.Vector.dist(this.pos, intersectionPoint)
+                        if (distance < distancesByArc[arc.label.id]) {
+                            distancesByArc[arc.label.id] = distance;
+                        }
+                    }
+                })
+            }
+            else if (this !== other) {
                 this.arcs.forEach(arc => {
                     if (arc.isPointInArc(this.velocity, other.pos)) {
                         arc.highlight();
@@ -91,7 +102,7 @@ class VObject {
     }
 
     getRange() {
-        return new Circle(this.pos.x, this.pos.y, Config.visionSize);
+        return new Circle(this.pos.x, this.pos.y, Config.visionSize * 2);
     }
 
     checkBoundaries() {

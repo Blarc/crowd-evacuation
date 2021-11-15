@@ -1,10 +1,11 @@
 class VObject {
 
-    constructor(x, y, size, visionSize, obstacleAvoidance) {
+    constructor(x, y, size, visionSize, obstacleAvoidance, goalSeeking) {
         this.pos = createVector(x, y);
         this.size = size;
         this.visionSize = visionSize;
         this.obstacleAvoidance = obstacleAvoidance;
+        this.goalSeeking = goalSeeking;
 
         this.velocity = p5.Vector.random2D();
         this.velocity.setMag(0.5);
@@ -24,6 +25,7 @@ class VObject {
     update() {
         // TODO Instead of checking for boundaries, add obstacles at the edges of the room
         this.checkBoundaries();
+        this.checkGoal();
 
         let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity];
         let points = quadTree.query(this.getRange());
@@ -43,18 +45,31 @@ class VObject {
 
                         // If two objects are about to crash into each other, rotate
                         if (distance < this.size / 2 + other.size / 2) {
-                            this.rotate(PI);
+                            this.setSpeed(this.obstacleAvoidance.s.STOP);
+                            this.rotate(this.obstacleAvoidance.a.LARGE_NEG)
                         }
                     }
                 })
             }
         }
 
+        let angle = 0;
+        let velocity = 0;
+
         if (this.obstacleAvoidance) {
             let [a, V] = this.obstacleAvoidance.getOutput(distancesByArc);
-            this.rotate(a);
-            this.setSpeed(V);
+            angle += 0.7 * a;
+            velocity += 0.7 * V;
         }
+
+        if (this.goalSeeking) {
+            let [a, V] = this.goalSeeking.getOutput(this, goal);
+            angle += 0.3 * a;
+            velocity += 0.3 * V;
+        }
+
+        this.rotate(angle);
+        this.setSpeed(velocity);
 
         this.pos.add(this.velocity.copy().setMag(this.velocityMag));
 
@@ -65,10 +80,13 @@ class VObject {
         noStroke();
         ellipse(this.pos.x, this.pos.y, this.size);
 
-        if ((this.velocity.x !== 0 || this.velocity.y !== 0) && Config.debug) {
-            this.arcs.forEach(arc => {
-                arc.show(this.velocity);
-            })
+        // Put all debugging visuals in this if-statement
+        if (Config.debug) {
+            if (this.velocity.x !== 0 || this.velocity.y !== 0) {
+                this.arcs.forEach(arc => {
+                    arc.show(this.velocity);
+                })
+            }
         }
     }
 
@@ -98,5 +116,11 @@ class VObject {
 
     stop() {
         this.setSpeed(0);
+    }
+
+    checkGoal() {
+        if (p5.Vector.dist(this.pos, goal) < 5) {
+            goal = createVector(random(50, width - 50), random(50, height - 50))
+        }
     }
 }

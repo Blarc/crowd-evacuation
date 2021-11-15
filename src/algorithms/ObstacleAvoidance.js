@@ -1,4 +1,4 @@
-class ObstacleAvoiding {
+class ObstacleAvoidance {
     constructor(speedIO, angleIO, distanceIO) {
         this.s = speedIO;
         this.a = angleIO;

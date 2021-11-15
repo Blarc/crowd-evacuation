@@ -3,10 +3,13 @@ const vObjects = [];
 
 let baseVector;
 let pause = false;
+let goal;
 
 function setup(){
     createCanvas(600, 400);
+
     baseVector = createVector(1, 0);
+    goal = createVector(random(50, width - 50), random(50, height - 50))
 
     // Create quadtree as big as the room
     quadTree = QuadTree.create();
@@ -14,13 +17,14 @@ function setup(){
     let speedIO = new IOSpeed(0.2, 0.5);
     let angleIO = new IOAngle(-10, -5, 5, 10);
     let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
-    let obstacleAvoidance = new ObstacleAvoiding(speedIO, angleIO, distanceIO);
+    let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
+    let goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
 
     for (let i = 0; i < Config.numberOfObjects; i++) {
         let x = random(50, width - 50);
         let y = random(50, height - 50);
 
-        let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance);
+        let vObject = new VObject(x, y, Config.objectSize, Config.visionSize, obstacleAvoidance, goalSeeking);
         vObjects.push(vObject);
     }
 }
@@ -39,6 +43,8 @@ function draw() {
         vObject.show();
         vObject.update();
     }
+
+    showGoal();
 }
 
 function mousePressed() {
@@ -55,4 +61,10 @@ function keyPressed() {
 
 function windowResized() {
     // TODO
+}
+
+function showGoal() {
+    fill(0, 255, 0);
+    noStroke();
+    ellipse(goal.x, goal.y, 10);
 }

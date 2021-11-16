@@ -4,7 +4,7 @@ class VLine {
         this.to = to;
     }
 
-    show(color= [0, 255, 0], weight = 1) {
+    show(color= [0, 255, 0], weight = 0.5) {
         stroke(color);
         strokeWeight(weight);
         line(this.from.x, this.from.y, this.to.x, this.to.y);

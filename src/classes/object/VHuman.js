@@ -1,25 +1,8 @@
-class VObject {
+class VHuman extends VMovingObject{
 
-    constructor(x, y, size, visionSize, obstacleAvoidance, goalSeeking) {
-        this.pos = createVector(x, y);
-        this.size = size;
-        this.visionSize = visionSize;
-        this.obstacleAvoidance = obstacleAvoidance;
-        this.goalSeeking = goalSeeking;
-
-        this.velocity = p5.Vector.random2D();
-        this.velocity.setMag(0.5);
-        this.velocityMag = 1.0;
-
-        this.arcs = [
-            // Temporarily removed BACK arc
-            // new VArc(this.position, -275, -85, Config.visionSize / 2, VArcLabelEnum.BACK),
-            new VArc(this.pos, -85, -45, this.visionSize, VArcLabelEnum.LEFT),
-            new VArc(this.pos, -45, -15, this.visionSize, VArcLabelEnum.FRONT_LEFT),
-            new VArc(this.pos, -15, 15, this.visionSize, VArcLabelEnum.FRONT),
-            new VArc(this.pos, 15, 45, this.visionSize, VArcLabelEnum.FRONT_RIGHT),
-            new VArc(this.pos, 45, 85, this.visionSize, VArcLabelEnum.RIGHT),
-        ]
+    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking) {
+        super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking);
+        this.size = Config.objectSize;
     }
 
     update() {
@@ -31,9 +14,9 @@ class VObject {
         for (let point of points) {
             let other = point.userData;
 
-            if (other instanceof VWall) {
-                this.arcs.forEach(arc => {
-                    let intersectionPoint = arc.isRectInArc(this.velocity, other.pos, other.width, other.height)
+            if (other instanceof VBlock) {
+                this.visionArcs.forEach(arc => {
+                    let intersectionPoint = arc.isRectInArc(this.velocity, other.rect)
                     if (intersectionPoint) {
                         arc.highlight();
 
@@ -45,7 +28,7 @@ class VObject {
                 })
             }
             else if (this !== other) {
-                this.arcs.forEach(arc => {
+                this.visionArcs.forEach(arc => {
                     if (arc.isPointInArc(this.velocity, other.pos)) {
                         arc.highlight();
 
@@ -84,21 +67,6 @@ class VObject {
 
         this.pos.add(this.velocity.copy().setMag(this.velocityMag));
 
-    }
-
-    show() {
-        fill(255);
-        noStroke();
-        ellipse(this.pos.x, this.pos.y, this.size);
-
-        // Put all debugging visuals in this if-statement
-        if (Config.debug) {
-            if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-                this.arcs.forEach(arc => {
-                    arc.show(this.velocity);
-                })
-            }
-        }
     }
 
     getRange() {

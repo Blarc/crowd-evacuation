@@ -29,22 +29,11 @@ class VArc {
             heading + this.endVisionAngle
         );
 
-        let s = (direction.heading() + this.startVisionAngle) % TWO_PI;
-        let e = (direction.heading() + this.endVisionAngle) % TWO_PI;
-
-        let start_x = this.pos.x + this.visionSize * cos(s)
-        let start_y = this.pos.y + this.visionSize * sin(s)
-
-        let end_x = this.pos.x + this.visionSize * cos(e)
-        let end_y = this.pos.y + this.visionSize * sin(e)
-        
         if (Config.showLines) {
-            //arc lines
-            let startLine = new VLine(this.pos, createVector(start_x, start_y))
-            startLine.show();
-
-            let endLine = new VLine(this.pos, createVector(end_x, end_y))
-            endLine.show();
+            let arcLines = this.getArcLines(direction)
+            for (let arcLine of arcLines) {
+                arcLine.show(255);
+            }
         }
     }
 
@@ -91,37 +80,12 @@ class VArc {
     /**
      * Checks if rect is in arc
      * @param {p5.Vector} direction of the arc
-     * @param {p5.Vector} point top-left corner of the rectangle
-     * @param {number} w rectangle's width
-     * @param {number} h rectangle's height
-     * @returns {boolean} whether arc contains the rectangle
+     * @param {VRect} rectangle
+     * @returns {p5.Vector} intersection point if exists or else null
      */
-    isRectInArc(direction, point, w, h) {
-        // TODO: Implement this function
-
-        let s = (direction.heading() + this.startVisionAngle) % TWO_PI;
-        let e = (direction.heading() + this.endVisionAngle) % TWO_PI;
-
-        let start_x = this.pos.x + this.visionSize * cos(s)
-        let start_y = this.pos.y + this.visionSize * sin(s)
-
-        let end_x = this.pos.x + this.visionSize * cos(e)
-        let end_y = this.pos.y + this.visionSize * sin(e)
-
-        //arc lines
-        let startLine = new VLine(this.pos, createVector(start_x, start_y))
-
-        let endLine = new VLine(this.pos, createVector(end_x, end_y))
-
-        let arcLines = [startLine, endLine];
-
-        //rectangle lines
-        let upperLine = new VLine(createVector(point.x - w / 2, point.y - h / 2), createVector(point.x + w / 2, point.y - h / 2));
-        let leftLine = new VLine(createVector(point.x - w / 2, point.y - h / 2), createVector(point.x - w / 2, point.y + h / 2));
-        let rightLine = new VLine(createVector(point.x + w / 2, point.y - h / 2), createVector(point.x + w / 2, point.y + h / 2));
-        let bottomLine = new VLine(createVector(point.x - w / 2, point.y + h / 2), createVector(point.x + w / 2, point.y + h / 2));
-
-        let rectangleLines = [upperLine, leftLine, rightLine, bottomLine];
+    isRectInArc(direction, rectangle) {
+        let arcLines = this.getArcLines(direction);
+        let rectangleLines = rectangle.getRectLines();
 
         for (let arcLine of arcLines) {
             for (let rectangleLine of rectangleLines) {
@@ -133,6 +97,27 @@ class VArc {
         }
 
         return null;
+    }
+
+    /**
+     * Returns the start and end line of an arc
+     * @param {p5.Vector} direction of the arc
+     * @returns {VLine[]} array containing start and end line
+     */
+    getArcLines(direction) {
+        let s = (direction.heading() + this.startVisionAngle) % TWO_PI;
+        let e = (direction.heading() + this.endVisionAngle) % TWO_PI;
+
+        let start_x = this.pos.x + this.visionSize * cos(s)
+        let start_y = this.pos.y + this.visionSize * sin(s)
+
+        let end_x = this.pos.x + this.visionSize * cos(e)
+        let end_y = this.pos.y + this.visionSize * sin(e)
+
+        let startLine = new VLine(this.pos, createVector(start_x, start_y))
+        let endLine = new VLine(this.pos, createVector(end_x, end_y))
+
+        return [startLine, endLine];
     }
 
     highlight() {

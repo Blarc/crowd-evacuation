@@ -73,8 +73,27 @@ class VArc {
      * @returns {boolean} whether arc contains the circle
      */
     isCircleInArc(direction, point, r) {
-        // TODO: Implement this function
-        return this.isPointInArc(direction, point);
+        let a = atan2(point.y - this.pos.y, point.x - this.pos.x) + PI;
+        let d = p5.Vector.dist(this.pos, point);
+
+        let s = (direction.heading() + this.startVisionAngle + PI) % TWO_PI;
+        let e = (direction.heading() + this.endVisionAngle + PI) % TWO_PI;
+
+        let dr = atan2(d, r);
+
+        if (d - r < this.visionSize) {
+            if (s < e) {
+                if (a > s - dr && a < e + dr) {
+                    return true;
+                }
+            }
+            if (s > e) {
+                if (a > s - dr || a < e + dr) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

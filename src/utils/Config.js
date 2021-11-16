@@ -6,9 +6,8 @@ class Config {
     static objectSize = 5;
     static numberOfObjects = 15;
     static debug = true;
-    static showLines = false;
+    static showLines = true;
 
-    static basicWallColor = '#150f4d';
-    static basicWallBrickHeight = 20;
-    static basicWallBrickWidth = 20;
+    static basicWallColor = '#BC4A3C';
+    static blockSize = 10;
 }

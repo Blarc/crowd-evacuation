@@ -23,18 +23,18 @@ class VRect {
     }
 
     bottomRightCorner() {
-        return createVector(point.x + this.width / 2, point.y + this.height / 2);
+        return createVector(this.pos.x + this.width / 2, this.pos.y + this.height / 2);
     }
 
     bottomLeftCorner() {
-        return createVector(point.x - this.width / 2, point.y + this.height / 2);
+        return createVector(this.pos.x - this.width / 2, this.pos.y + this.height / 2);
     }
 
     upperRightCorner() {
-        return createVector(point.x + this.width / 2, point.y - this.height / 2);
+        return createVector(this.pos.x + this.width / 2, this.pos.y - this.height / 2);
     }
 
     upperLeftCorner() {
-        return createVector(point.x - this.width / 2, point.y - this.height / 2);
+        return createVector(this.pos.x - this.width / 2, this.pos.y - this.height / 2);
     }
 }

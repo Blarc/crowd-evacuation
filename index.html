@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Crowd evacuation</title>
+    <link href="styles.css" rel="stylesheet">
 
     <!--  libs  -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
@@ -22,6 +23,7 @@
 
     <!--  enums  -->
     <script src="src/enums/VArcLabelEnum.js"></script>
+    <script src="src/enums/ModeEnum.js"></script>
 
     <!--  utils  -->
     <script src="src/utils/Config.js"></script>
@@ -33,13 +35,15 @@
 
 </head>
 <body>
+    <h1>Crowd evacuation simulation</h1>
+    <div id="canvas">
+        <p>You can find the code <a href="https://github.com/Blarc/crowd-evacuation" target="_blank">here</a>.</p>
+        <div id="canvas-controls">
+            <p>Pause: SPACE</p>
+            <p>Set goal: G</p>
+            <p>Draw: D</p>
+            <p>Remove: R</p>
+        </div>
+    </div>
 </body>
-<style>
-    html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
-</style>
 </html>

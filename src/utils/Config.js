@@ -1,6 +1,6 @@
 class Config {
-    static windowWidth = 600;
-    static windowHeight = 400;
+    static windowWidth = 1200;
+    static windowHeight = 800;
 
     static visionSize = 50;
     static objectSize = 5;

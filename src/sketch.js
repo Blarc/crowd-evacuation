@@ -15,16 +15,18 @@ function setup(){
     quadTree = QuadTree.create();
 
     let speedIO = new IOSpeed(0.2, 0.5);
-    let angleIO = new IOAngle(-10, -5, 5, 10);
+    let angleIO = new IOAngle(-60, -30, 30, 60);
     let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
+    let pathSearchingIO = new IOPathSearching(0.2, 1.0, 15, 0.2, 15, 0.4, 0.9);
     let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
+    let pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
     let goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
 
     for (let i = 0; i < Config.numberOfObjects; i++) {
         let x = random(50, width - 50);
         let y = random(50, height - 50);
 
-        let vObject = new VHuman(x, y, Config.visionSize, obstacleAvoidance, goalSeeking);
+        let vObject = new VHuman(x, y, Config.visionSize, obstacleAvoidance, null, pathSearching);
         vObjects.push(vObject);
     }
 

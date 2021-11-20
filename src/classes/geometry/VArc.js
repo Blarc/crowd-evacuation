@@ -135,8 +135,9 @@ class VArc {
 
         let startLine = new VLine(this.pos, createVector(start_x, start_y))
         let endLine = new VLine(this.pos, createVector(end_x, end_y))
+        let arcLine = new VLine(createVector(start_x, start_y), createVector(end_x, end_y));
 
-        return [startLine, endLine];
+        return [startLine, endLine, arcLine];
     }
 
     highlight() {

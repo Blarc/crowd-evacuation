@@ -1,15 +1,19 @@
 class VHuman extends VMovingObject{
 
-    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking) {
-        super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking);
+    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching) {
+        super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking, pathSearching);
         this.size = Config.objectSize;
     }
 
     update() {
         this.checkGoal();
 
-        let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity];
         let points = quadTree.query(this.getRange());
+
+        let staticObjectsByArc = [[], [], [], [], []];
+        let humansByArc = [[], [], [], [], []];
+        let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity];
+
 
         for (let point of points) {
             let other = point.userData;
@@ -24,10 +28,12 @@ class VHuman extends VMovingObject{
                         if (distance < distancesByArc[arc.label.id]) {
                             distancesByArc[arc.label.id] = distance;
                         }
+
+                        staticObjectsByArc[arc.label.id].push(other);
                     }
                 })
             }
-            else if (this !== other) {
+            else if (other instanceof VHuman && this !== other) {
                 this.visionArcs.forEach(arc => {
                     if (arc.isPointInArc(this.velocity, other.pos)) {
                         arc.highlight();
@@ -37,10 +43,12 @@ class VHuman extends VMovingObject{
                             distancesByArc[arc.label.id] = distance;
                         }
 
+                        humansByArc[arc.label.id].push(other);
+
                         // If two objects are about to crash into each other, rotate
                         if (distance < this.size / 2 + other.size / 2) {
                             this.setSpeed(this.obstacleAvoidance.s.STOP);
-                            this.rotate(this.obstacleAvoidance.a.LARGE_NEG)
+                            this.rotate(this.obstacleAvoidance.a.LARGE_NEG);
                         }
                     }
                 })
@@ -50,16 +58,24 @@ class VHuman extends VMovingObject{
         let angle = 0;
         let velocity = 0;
 
+        // TODO: angle and velocity of each method has to be weighted using Integration of Multiple Behaviors
+
         if (this.obstacleAvoidance) {
             let [a, V] = this.obstacleAvoidance.getOutput(distancesByArc);
-            angle += 0.7 * a;
-            velocity += 0.7 * V;
+            angle += 0.35 * a;
+            velocity += 0.35 * V;
         }
 
         if (this.goalSeeking) {
             let [a, V] = this.goalSeeking.getOutput(this, goal);
             angle += 0.3 * a;
             velocity += 0.3 * V;
+        }
+
+        if (this.pathSearching) {
+            let [a, V] = this.pathSearching.getOutput(this, humansByArc, staticObjectsByArc);
+            angle += 0.35 * a;
+            velocity += 0.35 * V;
         }
 
         this.rotate(angle);

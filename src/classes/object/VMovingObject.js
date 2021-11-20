@@ -1,9 +1,10 @@
 class VMovingObject extends VObject {
-    constructor(x, y, color, visionSize, obstacleAvoidance, goalSeeking) {
+    constructor(x, y, color, visionSize, obstacleAvoidance, goalSeeking, pathSearching) {
         super(x, y, color);
         this.visionSize = visionSize;
         this.obstacleAvoidance = obstacleAvoidance;
         this.goalSeeking = goalSeeking;
+        this.pathSearching = pathSearching;
 
         this.velocity = p5.Vector.random2D();
         this.velocityMag = 1.0;

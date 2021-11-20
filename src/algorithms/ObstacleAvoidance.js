@@ -9,13 +9,13 @@ class ObstacleAvoidance {
     Accepts distances to the nearest object in each
     vision sector.
      */
-    getOutput(distancesBySector) {
+    getOutput(objectsBySector) {
 
         let ruleNumber = 0;
         // Calculate rule number
-        for (let i = 0; i < distancesBySector.length; i++) {
+        for (let i = 0; i < objectsBySector.length; i++) {
             // If object is not near
-            if (distancesBySector[i] > this.d.NEAR) {
+            if (objectsBySector[i] > this.d.NEAR) {
                 ruleNumber += Math.pow(2, i);
             }
         }

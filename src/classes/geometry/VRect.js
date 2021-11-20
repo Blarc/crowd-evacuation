@@ -22,6 +22,36 @@ class VRect {
         return [rightLine, upperLine, leftLine, bottomLine]
     }
 
+    getIntersections(line) {
+        let intersections = [];
+
+        for (let rectLine of this.getRectLines()) {
+            let intersectionVector = line.intersection(rectLine)
+            if (intersectionVector) {
+                intersections.push(intersectionVector);
+            }
+        }
+
+        return intersections;
+    }
+
+    getNearestPointTo(object) {
+        let nearestPoint; 
+        let shortestDistance = Infinity;
+
+        let points = [this.upperLeftCorner(), this.upperRightCorner(), this.bottomLeftCorner(), this.bottomRightCorner()]
+
+        for (let point of points) {
+            let curDistance = p5.Vector.dist(object.pos, point);
+            if (curDistance < shortestDistance) {
+                shortestDistance = curDistance;
+                nearestPoint = point;
+            }
+        }
+
+        return nearestPoint;
+    }
+
     bottomRightCorner() {
         return createVector(this.pos.x + this.width / 2, this.pos.y + this.height / 2);
     }

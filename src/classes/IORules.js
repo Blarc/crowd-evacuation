@@ -24,3 +24,15 @@ class IODistance {
         this.FAR = far;
     }
 }
+
+class IOPathSearching {
+    constructor(lowRisk, highRisk, angleRisk, oiMagnifier, oiAngleBarrier, k_w, negative_energy_barrier) {
+        this.LOW_RISK = lowRisk;
+        this.HIGH_RISK = highRisk;
+        this.ANGLE_RISK = radians(angleRisk);
+        this.OI_MAGNIFIER = oiMagnifier;
+        this.OI_ANGLE_BARRIER = radians(oiAngleBarrier);
+        this.K_W = k_w;
+        this.NEGATIVE_ENERGY_BARRIER = negative_energy_barrier;
+    }
+}

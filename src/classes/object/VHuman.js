@@ -2,7 +2,7 @@ class VHuman extends VMovingObject{
 
     constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching) {
         super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking, pathSearching);
-        this.size = Config.objectSize;
+        this.size = convertSize(Config.objectSize);
     }
 
     update() {
@@ -86,14 +86,14 @@ class VHuman extends VMovingObject{
     }
 
     getRange() {
-        return new Circle(this.pos.x, this.pos.y, Config.visionSize * 2);
+        return new Circle(this.pos.x, this.pos.y, convertSize(visionSize * 2));
     }
 
     checkBoundaries() {
-        if (this.pos.x - Config.visionSize < 0 ||
-            this.pos.x + Config.visionSize > width ||
-            this.pos.y - Config.visionSize < 0 ||
-            this.pos.y + Config.visionSize > height
+        if (this.pos.x - visionSize < 0 ||
+            this.pos.x + visionSize > width ||
+            this.pos.y - visionSize < 0 ||
+            this.pos.y + visionSize > height
         ) {
             this.rotate(PI);
             // Make sure it doesn't get stuck

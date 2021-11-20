@@ -8,10 +8,18 @@ let pause = false;
 let goal;
 
 let mouseMode;
+let blockSize;
+let visionSize;
 
 function setup(){
-    let canvas = createCanvas(windowWidth*0.8, windowHeight*0.5);
+    let canvas = createCanvas(
+        Math.ceil(windowWidth * Config.windowWidthRatio),
+        Math.ceil(windowHeight * Config.windowHeightRatio)
+    );
     canvas.parent('canvas');
+
+    blockSize = convertSize(Config.blockSize);
+    visionSize = convertSize(Config.visionSize);
 
     mouseMode = ModeEnum.SET_GOAL;
     baseVector = createVector(1, 0);
@@ -22,7 +30,7 @@ function setup(){
 
     let speedIO = new IOSpeed(0.2, 0.5);
     let angleIO = new IOAngle(-60, -30, 30, 60);
-    let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
+    let distanceIO = new IODistance(visionSize, visionSize);
     let pathSearchingIO = new IOPathSearching(0.2, 1.0, 15, 0.2, 15, 0.4, 0.9);
     let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
     let pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
@@ -114,10 +122,10 @@ function drawMouse() {
 
     switch (mouseMode) {
         case ModeEnum.SET_GOAL:
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
+            if (blockSize * 2 < mouseX &&
+                mouseX < width - blockSize * 2 &&
+                blockSize * 2 < mouseY &&
+                mouseY < height - blockSize * 2 &&
                 mouseIsPressed
             ) {
                 goal = createVector(mouseX, mouseY);
@@ -128,12 +136,12 @@ function drawMouse() {
 
             fill(255, 255, 255, 150);
             noStroke();
-            rect(mouseX, mouseY, Config.blockSize, Config.blockSize);
+            rect(mouseX, mouseY, blockSize, blockSize);
 
-            if (Config.blockSize < mouseX &&
-                mouseX < width - Config.blockSize &&
-                Config.blockSize < mouseY &&
-                mouseY < height - Config.blockSize &&
+            if (blockSize < mouseX &&
+                mouseX < width - blockSize &&
+                blockSize < mouseY &&
+                mouseY < height - blockSize &&
                 mouseIsPressed
             ) {
                 createdWalls.add(new VBlock(mouseX, mouseY, true));
@@ -161,15 +169,15 @@ function drawMouse() {
 function createWallBoundaries() {
 
     // place bricks top-down
-    for (let y = 0; y <= height - Config.blockSize; y += Config.blockSize) {
-        let wallLeft = new VBlock(Config.blockSize / 2, y + Config.blockSize / 2);
-        let wallRight = new VBlock(width - Config.blockSize / 2, y + Config.blockSize / 2);
+    for (let y = 0; y <= height - blockSize; y += blockSize) {
+        let wallLeft = new VBlock(blockSize / 2, y + blockSize / 2);
+        let wallRight = new VBlock(width - blockSize / 2, y + blockSize / 2);
         walls.push(wallLeft, wallRight);
     }
 
-    for (let x = 0; x <= width - Config.blockSize; x += Config.blockSize) {
-        let wallTop = new VBlock(x + Config.blockSize / 2, Config.blockSize / 2);
-        let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2);
+    for (let x = 0; x <= width - blockSize; x += blockSize) {
+        let wallTop = new VBlock(x + blockSize / 2, blockSize / 2);
+        let wallBottom = new VBlock(x + blockSize / 2, height - blockSize / 2);
         walls.push(wallTop, wallBottom);
     }
 }

@@ -3,7 +3,7 @@ class VArc {
         this.pos = position;
         this.startVisionAngle = radians(startVisionAngle);
         this.endVisionAngle = radians(endVisionAngle);
-        this.visionSize = visionSize;
+        this.visionSize = convertSize(visionSize);
         this.label = label;
         this.color = null;
     }

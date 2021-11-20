@@ -1,8 +1,8 @@
 class VRect {
     constructor(position, width, height) {
         this.pos = position;
-        this.width = width;
-        this.height = height;
+        this.width = convertSize(width);
+        this.height = convertSize(height);
     }
 
     show(color = [100, 100, 100]) {
@@ -36,7 +36,7 @@ class VRect {
     }
 
     getNearestPointTo(object) {
-        let nearestPoint; 
+        let nearestPoint;
         let shortestDistance = Infinity;
 
         let points = [this.upperLeftCorner(), this.upperRightCorner(), this.bottomLeftCorner(), this.bottomRightCorner()]

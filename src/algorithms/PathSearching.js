@@ -7,7 +7,7 @@ class PathSearching {
     }
 
     getOutput(human, humansBySector, staticObjectsBySearching) {
-        
+
         let NE_BySector = [Infinity, Infinity, Infinity, Infinity, Infinity];
 
         let collisionRiskBySector = [0.0, 0.0, 0.0, 0.0, 0.0];
@@ -21,7 +21,7 @@ class PathSearching {
                 let angleToOtherObject = p5.Vector.sub(human.pos, object.pos);
                 let angle = object.velocity.angleBetween(angleToOtherObject);
 
-                collisionRiskBySector[sectorId] += this.getColisionRisk(distance, speed, angle);
+                collisionRiskBySector[sectorId] += this.getCollisionRisk(distance, speed, angle);
             }
         }
 
@@ -49,12 +49,12 @@ class PathSearching {
                 } else if (leftLineIntersections.length >= 1 && arcIntersections.length >= 1) {
                     let leftLineVector = leftLineIntersections[0].sub(human.pos);
                     let arcLineVector = arcIntersections[0].sub(human.pos);
-                    
+
                     angle = leftLineVector.angleBetween(arcLineVector);
                 } else if (rightLineIntersections.length >= 1 && arcIntersections.length >= 1) {
                     let rightLineVector = rightLineIntersections[0].sub(human.pos);
                     let arcLineVector = arcIntersections[0].sub(human.pos);
-                    
+
                     angle = rightLineVector.angleBetween(arcLineVector);
                 } else if (arcIntersections.length >= 2) {
                     let arcLineVector1 = arcIntersections[0].sub(human.pos);
@@ -89,7 +89,7 @@ class PathSearching {
                 }
 
                 obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, distance);
-            }   
+            }
         }
 
         for (let sectorId = 0; sectorId < obstacleImpactBySector.length; ++sectorId) {
@@ -97,7 +97,7 @@ class PathSearching {
         }
 
         //we omit division by zero
-        let max_NE = max(NE_BySector) + Config.epsilon; 
+        let max_NE = max(NE_BySector) + Config.epsilon;
         let min_NE = min(NE_BySector);
 
         for (let sectorId = 0; sectorId < NE_BySector.length; sectorId++) {
@@ -213,9 +213,9 @@ class PathSearching {
         }
     }
 
-    getColisionRisk(distance, speed, angle) {
+    getCollisionRisk(distance, speed, angle) {
 
-        if (speed == this.s.STOP) {
+        if (speed === this.s.STOP) {
             return this.ps.LOW_RISK;
         } else if (speed <= this.s.LOW) {
             if (abs(angle) <= this.ps.ANGLE_RISK && distance <= this.d.NEAR) return this.ps.HIGH_RISK;

@@ -1,6 +1,7 @@
 let quadTree;
 const vObjects = [];
 const walls = [];
+let createdWalls = new Set();
 
 let baseVector;
 let pause = false;
@@ -48,10 +49,15 @@ function draw() {
     }
 
     for (let vWall of walls) {
-        vWall.show();
-
         let point = new Point(vWall.pos.x, vWall.pos.y, vWall);
         quadTree.insert(point);
+        vWall.show();
+    }
+
+    for (let cWall of createdWalls) {
+        let point = new Point(cWall.pos.x, cWall.pos.y, cWall);
+        quadTree.insert(point);
+        cWall.show();
     }
 
     for (let vObject of vObjects) {
@@ -70,22 +76,26 @@ function mousePressed() {
 function keyPressed() {
     console.log(keyCode);
     switch (keyCode) {
-        // space
+        // SPACE - pause
         case 32:
             pause ? loop() : noLoop();
             pause = !pause;
             return;
-        // D
+        // C - clear
+        case 67:
+            createdWalls = new Set();
+            return;
+        // D - draw
         case 68:
             mouseMode = ModeEnum.DRAW;
             return;
-        // G
+        // E - eraser
+        case 69:
+            mouseMode = ModeEnum.ERASE;
+            return;
+        // G - set goal
         case 71:
             mouseMode = ModeEnum.SET_GOAL;
-            return;
-        // R
-        case 82:
-            mouseMode = ModeEnum.REMOVE;
             return;
     }
 }
@@ -126,11 +136,11 @@ function drawMouse() {
                 mouseY < height - Config.blockSize &&
                 mouseIsPressed
             ) {
-                walls.push(new VBlock(mouseX, mouseY, true));
+                createdWalls.add(new VBlock(mouseX, mouseY, true));
             }
             return;
 
-        case ModeEnum.REMOVE:
+        case ModeEnum.ERASE:
 
             fill(255, 255, 255, 150);
             noStroke();
@@ -140,8 +150,8 @@ function drawMouse() {
                 let points = quadTree.query(new Circle(mouseX, mouseY, 15));
                 for (let point of points) {
                     let object = point.userData;
-                    if (object instanceof VBlock && object.deletable) {
-                        walls.splice(walls.indexOf(object), 1);
+                    if (object instanceof VBlock && createdWalls.has(object)) {
+                        createdWalls.delete(object);
                     }
                 }
             }

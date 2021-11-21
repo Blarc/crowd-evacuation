@@ -6,7 +6,7 @@ class VBlock extends VObject{
     }
 
     show() {
-        this.rect.show(Config.basicWallColor);
+        this.rect.show(this.color);
     }
 
 }

@@ -39,6 +39,17 @@ class VRect {
         return intersections;
     }
 
+    getArcIntersections(direction, arc) {
+        let intersections = [];
+
+        for (let rectLine of this.getRectLines()) {
+            let intersectionVector = arc.intersection(direction, rectLine);
+            if (intersectionVector) intersections.push(intersectionVector);
+        }
+
+        return intersections;
+    }
+
     getIntersection(line) {
         for (let rectLine of this.getRectLines()) {
             let intersectionVector = line.intersection(rectLine)

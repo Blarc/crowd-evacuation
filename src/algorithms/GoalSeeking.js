@@ -16,43 +16,43 @@ class GoalSeeking {
 
         // Rule 1
         if (input_angle === this.a.LARGE_POS && input_distance === this.d.NEAR) {
-            return [this.a.LARGE_NEG, this.s.ZERO]
+            return [this.a.LARGE_NEG, this.s.ZERO, input_distance];
         }
         // Rule 2
         else if (input_angle === this.a.LARGE_POS && input_distance === this.d.FAR) {
-            return [this.a.LARGE_NEG, this.s.SLOW]
+            return [this.a.LARGE_NEG, this.s.SLOW, input_distance];
         }
         // Rule 3
         else if (input_angle === this.a.SMALL_POS && input_distance === this.d.NEAR) {
-            return [this.a.SMALL_NEG, this.s.SLOW]
+            return [this.a.SMALL_NEG, this.s.SLOW, input_distance];
         }
         // Rule 4
         else if (input_angle === this.a.SMALL_POS && input_distance === this.d.FAR) {
-            return [this.a.SMALL_NEG, this.s.SLOW]
+            return [this.a.SMALL_NEG, this.s.SLOW, input_distance];
         }
         // Rule 5
         else if (input_angle === this.a.ZERO && input_distance === this.d.NEAR) {
-            return [this.a.ZERO, this.s.FAST]
+            return [this.a.ZERO, this.s.FAST, input_distance];
         }
         // Rule 6
         else if (input_angle === this.a.ZERO && input_distance === this.d.FAR) {
-            return [this.a.ZERO, this.s.FAST]
+            return [this.a.ZERO, this.s.FAST, input_distance];
         }
         // Rule 7
         else if (input_angle === this.a.SMALL_NEG && input_distance === this.d.NEAR) {
-            return [this.a.SMALL_POS, this.s.SLOW]
+            return [this.a.SMALL_POS, this.s.SLOW, input_distance];
         }
         // Rule 8
         else if (input_angle === this.a.SMALL_NEG && input_distance === this.d.FAR) {
-            return [this.a.SMALL_POS, this.s.SLOW]
+            return [this.a.SMALL_POS, this.s.SLOW, input_distance];
         }
         // Rule 9
         else if (input_angle === this.a.LARGE_NEG && input_distance === this.d.NEAR) {
-            return [this.a.LARGE_POS, this.s.STOP]
+            return [this.a.LARGE_POS, this.s.STOP, input_distance];
         }
         // Rule 10
         else if (input_angle === this.a.LARGE_NEG && input_distance === this.d.FAR) {
-            return [this.a.LARGE_POS, this.s.SLOW]
+            return [this.a.LARGE_POS, this.s.SLOW, input_distance];
         }
     }
 

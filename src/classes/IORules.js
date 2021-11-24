@@ -36,3 +36,11 @@ class IOPathSearching {
         this.NEGATIVE_ENERGY_BARRIER = negative_energy_barrier;
     }
 }
+
+class IOdelta {
+    constructor(small, middle, large) {
+        this.SMALL = small;
+        this.MIDDLE = middle;
+        this.LARGE = large;
+    }
+}

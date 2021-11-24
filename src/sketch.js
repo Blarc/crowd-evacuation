@@ -37,20 +37,22 @@ function setup(){
     // Create quadtree as big as the room
     quadTree = QuadTree.create();
 
+    let deltaIO = new IOdelta(0.1, 0.4, 1.0);
     let speedIO = new IOSpeed(0.2, 0.5);
-    let angleIO = new IOAngle(-60, -30, 30, 60);
+    let angleIO = new IOAngle(-70, -30, 30, 70);
     let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
     let pathSearchingIO = new IOPathSearching(0.2, 1.0, 15, 0.2, 15, 0.4, 0.9);
 
     let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
     let pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
     let goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
+    let integrationOfMultipleBehaviours = new IntegrationOfMultipleBehaviours(speedIO, angleIO, distanceIO, deltaIO, pathSearchingIO.NEGATIVE_ENERGY_BARRIER);
 
     for (let i = 0; i < Config.numberOfObjects; i++) {
         let x = random(50, width - 50);
         let y = random(50, height - 50);
 
-        let vObject = new VHuman(x, y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching);
+        let vObject = new VHuman(x, y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
         vObjects.push(vObject);
     }
 

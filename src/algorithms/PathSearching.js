@@ -116,100 +116,100 @@ class PathSearching {
         switch (ruleNumber) {
             // high, high, high, high, high
             case 0:
-                return [this.a.LARGE_NEG, this.s.STOP];
+                return [this.a.LARGE_NEG, this.s.STOP, NE_BySector[2]];
             // low, high, high, high, high
             case 1:
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, low, high, high, high
             case 2:
-                return [this.a.SMALL_NEG, this.s.SLOW];
+                return [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
             // low, low, high, high, high
             case 3:
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, high, low, high, high
             case 4:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, high, low, high, high
             case 5:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, low, low, high, high
             case 6:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, low, low, high, high
             case 7:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, high, high, low, high
             case 8:
-                return [this.a.SMALL_POS, this.s.SLOW];
+                return [this.a.SMALL_POS, this.s.SLOW, NE_BySector[2]];
             // low, high, high, low, high
             case 9:
-                return [this.a.SMALL_POS, this.s.SLOW];
+                return [this.a.SMALL_POS, this.s.SLOW, NE_BySector[2]];
             // high, low, high, low, high
             case 10:
-                return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
             // low, low, high, low, high
             case 11:
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, high, low, low, high
             case 12:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, high, low, low, high
             case 13:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, low, low, low, high
             case 14:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, low, low, low, high
             case 15:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, high, high, high, low
             case 16:
-                return [this.a.LARGE_POS, this.s.SLOW];
+                return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, high, high, high, low
             case 17:
-                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, low, high, high, low
             case 18:
-                return [this.a.SMALL_NEG, this.s.SLOW];
+                return [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
             // low, low, high, high, low
             case 19:
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, high, low, high, low
             case 20:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, high, low, high, low
             case 21:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, low, low, high, low
             case 22:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, low, low, high, low
             case 23:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, high, high, low, low
             case 24:
-                return [this.a.LARGE_POS, this.s.SLOW];
+                return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, high, high, low, low
             case 25:
-                return [this.a.LARGE_POS, this.s.SLOW];
+                return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // high, low, high, low, low
             case 26:
-                return [this.a.LARGE_POS, this.s.SLOW];
+                return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, low, high, low, low
             case 27:
-                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
             // high, high, low, low, low
             case 28:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, high, low, low, low
             case 29:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // high, low, low, low, low
             case 30:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
             // low, low, low, low, low
             default:
-                return [this.a.ZERO, this.s.FAST];
+                return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
         }
     }
 

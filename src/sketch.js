@@ -38,10 +38,10 @@ function setup(){
     quadTree = QuadTree.create();
 
     let deltaIO = new IOdelta(0.1, 0.4, 1.0);
-    let speedIO = new IOSpeed(0.2, 0.5);
-    let angleIO = new IOAngle(-70, -30, 30, 70);
-    let distanceIO = new IODistance(Config.visionSize, Config.visionSize);
-    let pathSearchingIO = new IOPathSearching(0.2, 1.0, 15, 0.2, 15, 0.4, 0.9);
+    let speedIO = new IOSpeed(0.3, 0.5);
+    let angleIO = new IOAngle(-20, -10, 10, 20);
+    let distanceIO = new IODistance(Config.visionSize / 2.0, Config.visionSize);
+    let pathSearchingIO = new IOPathSearching(0.0, 1.0, 15, 0.2, 15, 0.4, 0.9);
 
     let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
     let pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);

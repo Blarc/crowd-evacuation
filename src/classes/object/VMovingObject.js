@@ -13,11 +13,11 @@ class VMovingObject extends VObject {
         this.visionArcs = [
             // Temporarily removed BACK arc
             // new VArc(this.position, -275, -85, Config.visionSize / 2, VArcLabelEnum.BACK),
-            new VArc(this.pos, -85, -45, this.visionSize, VArcLabelEnum.LEFT),
-            new VArc(this.pos, -45, -15, this.visionSize, VArcLabelEnum.FRONT_LEFT),
-            new VArc(this.pos, -15, 15, this.visionSize, VArcLabelEnum.FRONT),
-            new VArc(this.pos, 15, 45, this.visionSize, VArcLabelEnum.FRONT_RIGHT),
-            new VArc(this.pos, 45, 85, this.visionSize, VArcLabelEnum.RIGHT),
+            new VArc(this.pos, -50, -30, this.visionSize, VArcLabelEnum.LEFT),
+            new VArc(this.pos, -30, -10, this.visionSize, VArcLabelEnum.FRONT_LEFT),
+            new VArc(this.pos, -10, 10, this.visionSize, VArcLabelEnum.FRONT),
+            new VArc(this.pos, 10, 30, this.visionSize, VArcLabelEnum.FRONT_RIGHT),
+            new VArc(this.pos, 30, 50, this.visionSize, VArcLabelEnum.RIGHT),
         ]
     }
 

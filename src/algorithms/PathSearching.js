@@ -85,7 +85,7 @@ class PathSearching {
                 }
                 else {
                     console.log("leftLineIntersections length: ", leftLineIntersections.length, "right intersections length: ", rightLineIntersections.length, "arc intersections length: ", arcIntersections.length)
-                    throw new Error("Unpredicted behaviour");
+                    //throw new Error("Unpredicted behaviour");
                 }
 
                 obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, distance);

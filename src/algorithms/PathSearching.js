@@ -146,7 +146,8 @@ class PathSearching {
                 return [this.a.SMALL_POS, this.s.SLOW, NE_BySector[2]];
             // high, low, high, low, high
             case 10:
-                return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
+                //return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // low, low, high, low, high
             case 11:
                 return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
@@ -167,7 +168,8 @@ class PathSearching {
                 return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, high, high, high, low
             case 17:
-                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                //return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // high, low, high, high, low
             case 18:
                 return [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
@@ -197,7 +199,8 @@ class PathSearching {
                 return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, low, high, low, low
             case 27:
-                return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                //return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                return [this.a.LARGE_NEG, this.s.SLOW];
             // high, high, low, low, low
             case 28:
                 return [this.a.ZERO, this.s.FAST, NE_BySector[2]];

@@ -3,4 +3,5 @@ const ModeEnum = {
     SET_GOAL: 1,
     ERASE: 2,
     DRAW_PEDESTRIANS: 3,
+    DRAW_PEDESTRIAN_WITH_GOAL: 4,
 }

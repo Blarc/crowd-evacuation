@@ -1,5 +1,5 @@
 let quadTree;
-const vObjects = [];
+let vObjects = [];
 const walls = [];
 let createdWalls = new Set();
 
@@ -12,6 +12,8 @@ let mouseMode;
 let sizeSlider;
 
 let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviours;
+
+let curPedestrianPosition = undefined;
 
 function createUI() {
     let w = windowWidth * 0.8;
@@ -105,8 +107,27 @@ function mousePressed() {
             }
             return;
 
-        case ModeEnum.DRAW_PEDESTRIANS:
+        case ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL:
 
+            if (Config.blockSize * 2 < mouseX &&
+                mouseX < width - Config.blockSize * 2 &&
+                Config.blockSize * 2 < mouseY &&
+                mouseY < height - Config.blockSize * 2 &&
+                mouseIsPressed
+            ) {
+
+                if (curPedestrianPosition != undefined) {
+                    let vObject = new VHuman(curPedestrianPosition.x, curPedestrianPosition.y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, mouseX, mouseY);
+                    vObjects.push(vObject);
+                    curPedestrianPosition = undefined;
+                } else {
+                    curPedestrianPosition = createVector(mouseX, mouseY);
+                }
+
+            }
+            return;
+
+        case ModeEnum.DRAW_PEDESTRIANS:
             if (Config.blockSize * 2 < mouseX &&
                 mouseX < width - Config.blockSize * 2 &&
                 Config.blockSize * 2 < mouseY &&
@@ -135,6 +156,7 @@ function keyPressed() {
         // C - clear
         case 67:
             createdWalls = new Set();
+            vObjects = [];
             return;
         // D - draw
         case 68:
@@ -147,6 +169,10 @@ function keyPressed() {
         // G - set goal
         case 71:
             mouseMode = ModeEnum.SET_GOAL;
+            return;
+        // I - draw pedestrian with goal
+        case 73:
+            mouseMode = ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL;
             return;
     }
 }

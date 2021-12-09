@@ -1,8 +1,14 @@
 class VHuman extends VMovingObject{
 
-    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours) {
+    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, goal_x = -1, goal_y = -1) {
         super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
         this.size = Config.objectSize;
+        this.startingPos = createVector(x, y);
+        if (goal_x != -1 && goal_y != -1) {
+            this.goal = createVector(goal_x, goal_y)
+        } else {
+            this.goal = undefined
+        }
     }
 
     update() {
@@ -65,7 +71,11 @@ class VHuman extends VMovingObject{
         }
 
         if (this.goalSeeking) {
-            [a_g, V_g] = this.goalSeeking.getOutput(this, goal);
+            if (!this.goal) {
+                [a_g, V_g] = this.goalSeeking.getOutput(this, goal);
+            } else {
+                [a_g, V_g] = this.goalSeeking.getOutput(this, this.goal);
+            }
         }
 
         if (this.pathSearching) {
@@ -114,8 +124,11 @@ class VHuman extends VMovingObject{
     }
 
     checkGoal() {
-        if (p5.Vector.dist(this.pos, goal) < 5) {
+        if (!this.goal && p5.Vector.dist(this.pos, goal) < 5) {
             goal = createVector(random(50, width - 50), random(50, height - 50))
+        } else if (this.goal && p5.Vector.dist(this.pos, this.goal) < 5) {
+            this.pos.x = this.startingPos.x;
+            this.pos.y = this.startingPos.y;
         }
     }
 }

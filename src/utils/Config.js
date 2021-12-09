@@ -4,7 +4,7 @@ class Config {
 
     static visionSize = 50;
     static objectSize = 5;
-    static numberOfObjects = 10;
+    static numberOfObjects = 0;
     static debug = true;
     static showLines = true;
 

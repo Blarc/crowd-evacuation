@@ -13,6 +13,10 @@ class VRect {
         rect(this.pos.x, this.pos.y, this.width, this.height);
     }
 
+    hasSamePosition(rect) {
+        return this.pos.x == rect.pos.x && this.pos.y == rect.pos.y;
+    }
+
     getRectLines() {
         let upperLine = new VLine(this.upperLeftCorner(), this.upperRightCorner());
         let leftLine = new VLine(this.upperLeftCorner(), this.bottomLeftCorner());

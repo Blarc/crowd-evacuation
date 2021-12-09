@@ -11,6 +11,8 @@ let mouseMode;
 
 let sizeSlider;
 
+let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviours;
+
 function createUI() {
     let w = windowWidth * 0.8;
     let h = windowHeight * 0.5;
@@ -43,10 +45,10 @@ function setup(){
     let distanceIO = new IODistance(Config.visionSize / 2.0, Config.visionSize);
     let pathSearchingIO = new IOPathSearching(0.0, 1.0, 15, 0.2, 15, 0.4, 0.9);
 
-    let obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
-    let pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
-    let goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
-    let integrationOfMultipleBehaviours = new IntegrationOfMultipleBehaviours(speedIO, angleIO, distanceIO, deltaIO, pathSearchingIO.NEGATIVE_ENERGY_BARRIER);
+    obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
+    pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
+    goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
+    integrationOfMultipleBehaviours = new IntegrationOfMultipleBehaviours(speedIO, angleIO, distanceIO, deltaIO, pathSearchingIO.NEGATIVE_ENERGY_BARRIER);
 
     for (let i = 0; i < Config.numberOfObjects; i++) {
         let x = random(50, width - 50);
@@ -79,10 +81,10 @@ function draw() {
         quadTree.insert(point);
         cWall.show();
     }
-
+    
     for (let vObject of vObjects) {
         vObject.show();
-        vObject.update();
+        !pause && vObject.update();
     }
 
     drawMouse();
@@ -91,15 +93,44 @@ function draw() {
 
 function mousePressed() {
     // Empty
+    switch (mouseMode) {
+        case ModeEnum.SET_GOAL:
+            if (Config.blockSize * 2 < mouseX &&
+                mouseX < width - Config.blockSize * 2 &&
+                Config.blockSize * 2 < mouseY &&
+                mouseY < height - Config.blockSize * 2 &&
+                mouseIsPressed
+            ) {
+                goal = createVector(mouseX, mouseY);
+            }
+            return;
+
+        case ModeEnum.DRAW_PEDESTRIANS:
+
+            if (Config.blockSize * 2 < mouseX &&
+                mouseX < width - Config.blockSize * 2 &&
+                Config.blockSize * 2 < mouseY &&
+                mouseY < height - Config.blockSize * 2 &&
+                mouseIsPressed
+            ) {
+
+                let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
+                vObjects.push(vObject);
+
+            }
+            return;
+    }
 }
 
 function keyPressed() {
-    console.log(keyCode);
     switch (keyCode) {
         // SPACE - pause
         case 32:
-            pause ? loop() : noLoop();
             pause = !pause;
+            return;
+        // P - draw pedestrians
+        case 80:
+            mouseMode = ModeEnum.DRAW_PEDESTRIANS;
             return;
         // C - clear
         case 67:
@@ -107,7 +138,7 @@ function keyPressed() {
             return;
         // D - draw
         case 68:
-            mouseMode = ModeEnum.DRAW;
+            mouseMode = ModeEnum.DRAW_OBSTACLES;
             return;
         // E - eraser
         case 69:
@@ -131,20 +162,26 @@ function showGoal() {
 }
 
 function drawMouse() {
-
     switch (mouseMode) {
-        case ModeEnum.SET_GOAL:
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
-                mouseIsPressed
-            ) {
-                goal = createVector(mouseX, mouseY);
+        case ModeEnum.ERASE:
+
+            fill(255, 255, 255, 150);
+            noStroke();
+            ellipse(mouseX, mouseY, 30);
+
+            if (mouseIsPressed) {
+                let points = quadTree.query(new Circle(mouseX, mouseY, 15));
+                for (let point of points) {
+                    let object = point.userData;
+                    if (object instanceof VBlock && createdWalls.has(object)) {
+                        createdWalls.delete(object);
+                    }
+                }
             }
+
             return;
 
-        case ModeEnum.DRAW:
+        case ModeEnum.DRAW_OBSTACLES:
 
             let size = sizeSlider.value();
 
@@ -169,24 +206,16 @@ function drawMouse() {
             ) {
                 for (let i = 0; i < size; i++) {
                     for (let j = 0; j < size; j++) {
-                        createdWalls.add(new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, [255, 0, 0]));
-                    }
-                }
-            }
-            return;
 
-        case ModeEnum.ERASE:
-
-            fill(255, 255, 255, 150);
-            noStroke();
-            ellipse(mouseX, mouseY, 30);
-
-            if (mouseIsPressed) {
-                let points = quadTree.query(new Circle(mouseX, mouseY, 15));
-                for (let point of points) {
-                    let object = point.userData;
-                    if (object instanceof VBlock && createdWalls.has(object)) {
-                        createdWalls.delete(object);
+                        let newBlock = new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, [255, 0, 0]);
+                        let isOnSamePositionAsOneOfExistingBlocks = false;
+                        for (let block of createdWalls) {
+                            if (block.rect.hasSamePosition(newBlock)) {
+                                isOnSamePositionAsOneOfExistingBlocks = true;
+                                break;
+                            }
+                        }
+                        !isOnSamePositionAsOneOfExistingBlocks && createdWalls.add(newBlock);
                     }
                 }
             }

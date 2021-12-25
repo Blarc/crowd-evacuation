@@ -2,7 +2,7 @@ class Config {
     static windowWidth = 1200;
     static windowHeight = 800;
 
-    static visionSize = 50;
+    static visionSize = 100;
     static objectSize = 5;
     static numberOfObjects = 0;
     static debug = true;

@@ -1,9 +1,10 @@
 class PathSearching {
-    constructor(speedIO, angleIO, distanceIO, pathSearchingIO) {
+    constructor(speedIO, angleIO, distanceIO, pathSearchingIO, panicCoefficientsIO) {
         this.s = speedIO;
         this.a = angleIO;
         this.d = distanceIO;
         this.ps = pathSearchingIO;
+        this.cf = panicCoefficientsIO;
     }
 
     getOutput(human, humansBySector, staticObjectsBySearching) {
@@ -20,8 +21,10 @@ class PathSearching {
 
                 let angleToOtherObject = p5.Vector.sub(human.pos, object.pos);
                 let angle = object.velocity.angleBetween(angleToOtherObject);
+                
+                let cur_CR = this.getCollisionRisk(distance, speed, angle);
 
-                collisionRiskBySector[sectorId] += this.getCollisionRisk(distance, speed, angle);
+                collisionRiskBySector[sectorId] += (object.isAssailant && human.category == 3) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
             }
         }
 

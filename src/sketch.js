@@ -42,13 +42,14 @@ function setup(){
     quadTree = QuadTree.create();
 
     let deltaIO = new IOdelta(0.1, 0.4, 1.0);
-    let speedIO = new IOSpeed(0.3, 0.5);
+    let speedIO = new IOSpeed(0.3, 0.5, 0.8);
     let angleIO = new IOAngle(-20, -10, 10, 20);
-    let distanceIO = new IODistance(Config.visionSize / 2.0, Config.visionSize);
+    let distanceIO = new IODistance(Config.visionSize / 3.0, Config.visionSize);
     let pathSearchingIO = new IOPathSearching(0.0, 1.0, 15, 0.2, 15, 0.4, 0.9);
+    let panicCoefficientsIO = new IOPanicCoefficients(0.5, 0.9, 0.9);
 
     obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
-    pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO);
+    pathSearching = new PathSearching(speedIO, angleIO, distanceIO, pathSearchingIO, panicCoefficientsIO);
     goalSeeking = new GoalSeeking(speedIO, angleIO, distanceIO);
     integrationOfMultipleBehaviours = new IntegrationOfMultipleBehaviours(speedIO, angleIO, distanceIO, deltaIO, pathSearchingIO.NEGATIVE_ENERGY_BARRIER);
 

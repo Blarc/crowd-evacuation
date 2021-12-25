@@ -1,8 +1,9 @@
 class IOSpeed {
-    constructor(slow, fast) {
+    constructor(slow, fast, max_speed) {
         this.STOP = 0;
         this.SLOW = slow;
         this.FAST = fast;
+        this.MAX_SPEED = max_speed;
     }
 }
 
@@ -14,6 +15,14 @@ class IOAngle {
         this.ZERO = 0;
         this.SMALL_POS = radians(smallPos);
         this.LARGE_POS = radians(largePos);
+    }
+}
+
+class IOPanicCoefficients {
+    constructor(k_p_cat_2, k_p_cat_3, k_c_cat_3) {
+        this.K_P_CAT_2 = k_p_cat_2;
+        this.K_P_CAT_3 = k_p_cat_3;
+        this.K_C_CAT_3 = k_c_cat_3;
     }
 }
 

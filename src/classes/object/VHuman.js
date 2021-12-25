@@ -1,9 +1,12 @@
 class VHuman extends VMovingObject{
 
-    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, goal_x = -1, goal_y = -1) {
+    constructor(x, y, visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, goal_x = -1, goal_y = -1, isAssailant = false) {
         super(x, y, [255, 255, 255], visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
         this.size = Config.objectSize;
         this.startingPos = createVector(x, y);
+        this.isAssailant = isAssailant;
+        // TODO: Category has to be changed dynamically, based on assailants in the room
+        this.category = 1;
         if (goal_x != -1 && goal_y != -1) {
             this.goal = createVector(goal_x, goal_y)
         } else {
@@ -80,6 +83,11 @@ class VHuman extends VMovingObject{
 
         if (this.pathSearching) {
             [a_p, V_p, NE_f] = this.pathSearching.getOutput(this, humansByArc, staticObjectsByArc);
+            if (this.category == 2) {
+                V_p = (1 - this.pathSearching.cf.K_P_CAT_2) * V_p + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
+            } else if (this.category == 3) {
+                V_p = (1 - this.pathSearching.cf.K_P_CAT_3) * V_p + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
+            }
         }
 
         if (this.integrationOfMultipleBehaviours) {

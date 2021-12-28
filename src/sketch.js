@@ -141,6 +141,20 @@ function mousePressed() {
 
             }
             return;
+
+        case ModeEnum.DRAW_ASSAILANTS:
+            if (Config.blockSize * 2 < mouseX &&
+                mouseX < width - Config.blockSize * 2 &&
+                Config.blockSize * 2 < mouseY &&
+                mouseY < height - Config.blockSize * 2 &&
+                mouseIsPressed
+            ) {
+
+                let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, -1, -1, true);
+                vObjects.push(vObject);
+
+            }
+            return;
     }
 }
 
@@ -174,6 +188,10 @@ function keyPressed() {
         // I - draw pedestrian with goal
         case 73:
             mouseMode = ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL;
+            return;
+        // A - draw assailants
+        case 65:
+            mouseMode = ModeEnum.DRAW_ASSAILANTS;
             return;
     }
 }

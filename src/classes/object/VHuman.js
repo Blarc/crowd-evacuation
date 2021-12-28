@@ -5,16 +5,28 @@ class VHuman extends VMovingObject{
         this.size = Config.objectSize;
         this.startingPos = createVector(x, y);
         this.isAssailant = isAssailant;
-        // TODO: Category has to be changed dynamically, based on assailants in the room
-        this.category = 1;
         if (goal_x != -1 && goal_y != -1) {
             this.goal = createVector(goal_x, goal_y)
         } else {
             this.goal = undefined
         }
+        // TODO: Category has to be changed dynamically, based on assailants in the room
+        this.category = 1;
+        this.pickedHuman = undefined;
+        this.isAllive = true;
+        if (this.isAssailant) {
+            this.color = color(Config.assailantColor);
+        }
     }
 
     update() {
+        if (!this.isAllive) {
+            this.color = color(Config.deadHumanColor);
+            this.velocity.x = 0.0;
+            this.velocity.y = 0.0;
+            return;
+        }
+
         this.checkGoal();
 
         let points = quadTree.query(this.getRange());
@@ -22,7 +34,13 @@ class VHuman extends VMovingObject{
         let staticObjectsByArc = [[], [], [], [], []];
         let humansByArc = [[], [], [], [], []];
         let distancesByArc = [Infinity, Infinity, Infinity, Infinity, Infinity];
+        let curNearestHuman, curShortestDistance;
 
+        //only if we choose simple tactic for assailant, that picks the nearest human in room
+        if (this.isAssailant && !this.pickedHuman) {
+            curNearestHuman = undefined;
+            curShortestDistance = Infinity;
+        }
 
         for (let point of points) {
             let other = point.userData;
@@ -48,8 +66,19 @@ class VHuman extends VMovingObject{
                         arc.highlight();
 
                         let distance = p5.Vector.dist(this.pos, other.pos)
-                        if (distance < distancesByArc[arc.label.id]) {
+                        if (distance < distancesByArc[arc.label.id] && !this.isAssailant) {
                             distancesByArc[arc.label.id] = distance;
+                        }
+
+                        if (!other.isAssailant && other.isAllive && distance < curShortestDistance) {
+                            curNearestHuman = other;
+                            curShortestDistance = distance;
+                        }
+
+                        if (this.isAssailant && other.isAllive && other == this.pickedHuman && distance < Config.objectSize * 2) {
+                            other.isAllive = false;
+                            this.pickedHuman = undefined;
+                            this.goal = undefined;
                         }
 
                         humansByArc[arc.label.id].push(other);
@@ -64,6 +93,11 @@ class VHuman extends VMovingObject{
             }
         }
 
+        if (this.isAssailant && !this.pickedHuman && curNearestHuman) {
+            this.pickedHuman = curNearestHuman;
+            this.goal = curNearestHuman.pos;
+        }
+
         let angle = 0;
         let velocity = 0;
         let a_o, V_o, a_p, V_p, NE_f, a_g, V_g, d_g = 0;
@@ -74,7 +108,12 @@ class VHuman extends VMovingObject{
         }
 
         if (this.goalSeeking) {
-            if (!this.goal) {
+            //if assailant doesn't see any target
+            if (!this.goal && this.isAssailant) {
+                V_g = this.goalSeeking.s.SLOW;
+                a_g = this.goalSeeking.a.SMALL_NEG / 15.0;
+            }
+            else if (!this.goal) {
                 [a_g, V_g] = this.goalSeeking.getOutput(this, goal);
             } else {
                 [a_g, V_g] = this.goalSeeking.getOutput(this, this.goal);

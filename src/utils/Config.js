@@ -9,6 +9,8 @@ class Config {
     static showLines = true;
 
     static basicWallColor = '#BC4A3C';
+    static deadHumanColor = "red";
+    static assailantColor = "green"
     static blockSize = 10;
 
     static epsilon = 0.00001;

@@ -13,6 +13,7 @@ class PathSearching {
 
         let collisionRiskBySector = [0.0, 0.0, 0.0, 0.0, 0.0];
         let obstacleImpactBySector = [0.0, 0.0, 0.0, 0.0, 0.0];
+        let pickedHumanSectorId = -1;
 
         for (let [sectorId, sector] of humansBySector.entries()) {
             for (let object of sector) {
@@ -25,6 +26,10 @@ class PathSearching {
                 let cur_CR = this.getCollisionRisk(distance, speed, angle);
 
                 collisionRiskBySector[sectorId] += (object.isAssailant && human.category == 3) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
+
+                if (human.isAssailant && human.pickedHuman == object) {
+                    pickedHumanSectorId = sectorId;
+                }
             }
         }
 
@@ -96,7 +101,12 @@ class PathSearching {
         }
 
         for (let sectorId = 0; sectorId < obstacleImpactBySector.length; ++sectorId) {
-            NE_BySector[sectorId] = this.ps.K_W * obstacleImpactBySector[sectorId] + (1 - this.ps.K_W) * collisionRiskBySector[sectorId];
+            if (human.isAssailant) {
+                NE_BySector[sectorId] = sectorId == pickedHumanSectorId ? 0 : 1;
+            } else {
+                NE_BySector[sectorId] = this.ps.K_W * obstacleImpactBySector[sectorId] + (1 - this.ps.K_W) * collisionRiskBySector[sectorId];
+            }
+
         }
 
         //we omit division by zero

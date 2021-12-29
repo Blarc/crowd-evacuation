@@ -41,11 +41,11 @@ function setup(){
     // Create quadtree as big as the room
     quadTree = QuadTree.create();
 
-    let deltaIO = new IOdelta(0.1, 0.4, 1.0);
+    let deltaIO = new IOdelta(0.2, 0.4, 0.8);
     let speedIO = new IOSpeed(0.3, 0.5, 0.8);
-    let angleIO = new IOAngle(-20, -10, 10, 20);
+    let angleIO = new IOAngle(-10, -5, 5, 10);
     let distanceIO = new IODistance(Config.visionSize / 3.0, Config.visionSize);
-    let pathSearchingIO = new IOPathSearching(0.0, 1.0, 15, 0.2, 15, 0.4, 0.9);
+    let pathSearchingIO = new IOPathSearching(lowRisk = 0.0, highRisk = 1.0, angleRisk = 15, oiMagnifier = 0.05, oiAngleBarrier = 15, k_w = 0.4, 0.9);
     let panicCoefficientsIO = new IOPanicCoefficients(0.5, 0.9, 0.9);
 
     obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
@@ -230,7 +230,6 @@ function drawMouse() {
 
             let size = sizeSlider.value();
 
-            console.log(size);
             let x = mouseX - mouseX % (Config.blockSize * size) + Config.blockSize / 2;
             let y = mouseY - mouseY % (Config.blockSize * size) + Config.blockSize / 2;
 
@@ -271,14 +270,14 @@ function createWallBoundaries() {
 
     // place bricks top-down
     for (let y = 0; y <= height - Config.blockSize; y += Config.blockSize) {
-        let wallLeft = new VBlock(Config.blockSize / 2, y + Config.blockSize / 2);
-        let wallRight = new VBlock(width - Config.blockSize / 2, y + Config.blockSize / 2);
+        let wallLeft = new VBlock(Config.blockSize / 2, y + Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
+        let wallRight = new VBlock(width - Config.blockSize / 2, y + Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
         walls.push(wallLeft, wallRight);
     }
 
     for (let x = 0; x <= width - Config.blockSize; x += Config.blockSize) {
-        let wallTop = new VBlock(x + Config.blockSize / 2, Config.blockSize / 2);
-        let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2);
+        let wallTop = new VBlock(x + Config.blockSize / 2, Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
+        let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
         walls.push(wallTop, wallBottom);
     }
 }

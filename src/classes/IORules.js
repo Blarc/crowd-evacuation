@@ -40,7 +40,8 @@ class IOPathSearching {
         this.HIGH_RISK = highRisk;
         this.ANGLE_RISK = radians(angleRisk);
         this.OI_MAGNIFIER = oiMagnifier;
-        this.OI_ANGLE_BARRIER = radians(oiAngleBarrier);
+        //ommited radians just for better readability
+        this.OI_ANGLE_BARRIER = oiAngleBarrier;
         this.K_W = k_w;
         this.NEGATIVE_ENERGY_BARRIER = negative_energy_barrier;
     }

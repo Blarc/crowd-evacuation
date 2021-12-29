@@ -133,11 +133,28 @@ class VArc {
         let end_x = this.pos.x + this.visionSize * cos(e)
         let end_y = this.pos.y + this.visionSize * sin(e)
 
-        let startLine = new VLine(this.pos, createVector(start_x, start_y))
+        /*let startLine = new VLine(this.pos, createVector(start_x, start_y))
         let endLine = new VLine(this.pos, createVector(end_x, end_y))
-        let arcLine = new VLine(createVector(start_x, start_y), createVector(end_x, end_y));
+        let arcLine = new VLine(createVector(start_x, start_y), createVector(end_x, end_y));*/
+        let lines = []
 
-        return [startLine, endLine, arcLine];
+        //get also lines in the middle
+        let tmp_s = s
+        let tmp_e = e
+        let diff = (tmp_e - tmp_s) / Config.numberOfControlLines;
+
+        while ((s < e && tmp_s < tmp_e) || (s > e && tmp_s > tmp_e)) {
+            start_x = this.pos.x + this.visionSize * cos(tmp_s)
+            start_y = this.pos.y + this.visionSize * sin(tmp_s)
+
+            tmp_s += diff;
+            let line = new VLine(this.pos, createVector(start_x, start_y))
+            lines.push(line);
+        }
+
+
+        //return [startLine, endLine, arcLine];
+        return lines;
     }
 
     highlight() {

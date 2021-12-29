@@ -15,13 +15,14 @@ class VHuman extends VMovingObject{
         this.pickedHuman = undefined;
         this.isAllive = true;
         if (this.isAssailant) {
-            this.color = color(Config.assailantColor);
+            this.color = Config.assailantColor;
+            this.prevGoalSeekingAngle = goalSeeking.a.ZERO;
         }
     }
 
     update() {
         if (!this.isAllive) {
-            this.color = color(Config.deadHumanColor);
+            this.color = Config.deadHumanColor;
             this.velocity.x = 0.0;
             this.velocity.y = 0.0;
             return;
@@ -111,7 +112,10 @@ class VHuman extends VMovingObject{
             //if assailant doesn't see any target
             if (!this.goal && this.isAssailant) {
                 V_g = this.goalSeeking.s.SLOW;
-                a_g = this.goalSeeking.a.SMALL_NEG / 15.0;
+                //simple room searching algorithm
+                let new_Angle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
+                a_g = 0.9 * this.prevGoalSeekingAngle + 0.1 * new_Angle;
+                this.prevGoalSeekingAngle = a_g;
             }
             else if (!this.goal) {
                 [a_g, V_g] = this.goalSeeking.getOutput(this, goal);

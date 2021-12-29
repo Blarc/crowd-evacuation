@@ -34,70 +34,112 @@ class PathSearching {
         }
 
         for (let [sectorId, sector] of staticObjectsBySearching.entries()) {
-            for (let object of sector) {
-                let arc = human.visionArcs[sectorId];
-                let angle = 0.0;
-                let distance = Infinity;
+            let angle = 0.0;
+            let shortestDistance = Infinity;
+            let prevIntersection = false;
 
-                let [leftLine, rightLine, arcLine] = arc.getArcLines(human.velocity);
+            let arc = human.visionArcs[sectorId];
 
-                let leftLineIntersections = object.rect.getIntersections(leftLine);
-                let rightLineIntersections = object.rect.getIntersections(rightLine);
-                let arcIntersections = object.rect.getIntersections(arcLine);
+            let lines = arc.getArcLines(human.velocity);
 
-                let allIntersections = leftLineIntersections.concat(rightLineIntersections);
-                allIntersections = allIntersections.concat(arcIntersections);
-                for (let intersection of allIntersections) {
-                    let curDistance = p5.Vector.dist(human.pos, intersection);
-                    if (curDistance < distance) distance = curDistance;
+            
+            for (let line of lines) {
+
+                let anyIntersection = false;
+
+                for (let object of sector) {
+
+                    let intersections = object.isOuterWall ? [] : object.rect.getIntersections(line);
+
+                    if (intersections.length > 0) {
+                        anyIntersection = true;
+                    }
+
+                    let curShortestDistanceToIntersection = Infinity;
+                    for (let intersection of intersections) {
+                        let curDistance = p5.Vector.dist(human.pos, intersection);
+                        if (curDistance < shortestDistance) {
+                            shortestDistance = curDistance;
+                        }
+                    }
                 }
 
-                if (leftLineIntersections.length >= 1 && rightLineIntersections.length >= 1) {
-                    angle = abs(arc.endVisionAngle - arc.startVisionAngle);
-                } else if (leftLineIntersections.length >= 1 && arcIntersections.length >= 1) {
-                    let leftLineVector = leftLineIntersections[0].sub(human.pos);
-                    let arcLineVector = arcIntersections[0].sub(human.pos);
-
-                    angle = leftLineVector.angleBetween(arcLineVector);
-                } else if (rightLineIntersections.length >= 1 && arcIntersections.length >= 1) {
-                    let rightLineVector = rightLineIntersections[0].sub(human.pos);
-                    let arcLineVector = arcIntersections[0].sub(human.pos);
-
-                    angle = rightLineVector.angleBetween(arcLineVector);
-                } else if (arcIntersections.length >= 2) {
-                    let arcLineVector1 = arcIntersections[0].sub(human.pos);
-                    let arcLineVector2 = arcIntersections[1].sub(human.pos);
-
-                    angle = arcLineVector1.angleBetween(arcLineVector2);
-                } else if (leftLineIntersections.length >= 1) {
-                    let point = object.rect.getNearestPointTo(human)
-
-                    let leftLineVector = leftLineIntersections[0].sub(human.pos);
-                    let squareEdgeVector = point.sub(human.pos);
-
-                    angle = leftLineVector.angleBetween(squareEdgeVector);
-                } else if (rightLineIntersections.length >= 1) {
-                    let point = object.rect.getNearestPointTo(human)
-
-                    let rightLineVector = rightLineIntersections[0].sub(human.pos);
-                    let squareEdgeVector = point.sub(human.pos);
-
-                    angle = rightLineVector.angleBetween(squareEdgeVector);
-                } else if (arcIntersections.length >= 1) {
-                    let point = object.rect.getNearestPointTo(human)
-
-                    let arcLineVector = arcIntersections[0].sub(human.pos);
-                    let squareEdgeVector = point.sub(human.pos);
-
-                    angle = arcLineVector.angleBetween(squareEdgeVector);
-                }
-                else {
-                    console.log("leftLineIntersections length: ", leftLineIntersections.length, "right intersections length: ", rightLineIntersections.length, "arc intersections length: ", arcIntersections.length)
-                    //throw new Error("Unpredicted behaviour");
+                if (prevIntersection && anyIntersection > 0) {
+                    angle += Config.arcSize / Config.numberOfControlLines;
+                } else if (anyIntersection > 0) {
+                    prevIntersection = true;
+                } else {
+                    prevIntersection = false;
                 }
 
-                obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, distance);
             }
+
+            /*let [leftLine, rightLine, arcLine] = arc.getArcLines(human.velocity);
+
+            let leftLineIntersections = object.rect.getIntersections(leftLine);
+            let rightLineIntersections = object.rect.getIntersections(rightLine);
+            let arcIntersections = object.rect.getIntersections(arcLine);
+
+            let allIntersections = leftLineIntersections.concat(rightLineIntersections);
+            allIntersections = allIntersections.concat(arcIntersections);
+            for (let intersection of allIntersections) {
+                let curDistance = p5.Vector.dist(human.pos, intersection);
+                if (curDistance < distance) distance = curDistance;
+            }
+
+            if (leftLineIntersections.length >= 1 && rightLineIntersections.length >= 1) {
+                angle = abs(arc.endVisionAngle - arc.startVisionAngle);
+            } else if (leftLineIntersections.length >= 1 && arcIntersections.length >= 1) {
+                let leftLineVector = leftLineIntersections[0].sub(human.pos);
+                let arcLineVector = arcIntersections[0].sub(human.pos);
+
+                angle = leftLineVector.angleBetween(arcLineVector);
+            } else if (rightLineIntersections.length >= 1 && arcIntersections.length >= 1) {
+                let rightLineVector = rightLineIntersections[0].sub(human.pos);
+                let arcLineVector = arcIntersections[0].sub(human.pos);
+
+                angle = rightLineVector.angleBetween(arcLineVector);
+            } else if (arcIntersections.length >= 2) {
+                let arcLineVector1 = arcIntersections[0].sub(human.pos);
+                let arcLineVector2 = arcIntersections[1].sub(human.pos);
+
+                angle = arcLineVector1.angleBetween(arcLineVector2);
+            } else if (leftLineIntersections.length >= 1) {
+                let point = object.rect.getNearestPointTo(human)
+
+                let leftLineVector = leftLineIntersections[0].sub(human.pos);
+                let squareEdgeVector = point.sub(human.pos);
+
+                angle = leftLineVector.angleBetween(squareEdgeVector);
+            } else if (rightLineIntersections.length >= 1) {
+                let point = object.rect.getNearestPointTo(human)
+
+                let rightLineVector = rightLineIntersections[0].sub(human.pos);
+                let squareEdgeVector = point.sub(human.pos);
+
+                angle = rightLineVector.angleBetween(squareEdgeVector);
+            } else if (arcIntersections.length >= 1) {
+                let point = object.rect.getNearestPointTo(human)
+
+                let arcLineVector = arcIntersections[0].sub(human.pos);
+                let squareEdgeVector = point.sub(human.pos);
+
+                angle = arcLineVector.angleBetween(squareEdgeVector);
+            }
+            else {
+                console.log("leftLineIntersections length: ", leftLineIntersections.length, "right intersections length: ", rightLineIntersections.length, "arc intersections length: ", arcIntersections.length)
+                //throw new Error("Unpredicted behaviour");
+            }
+            
+            angle += angle;
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+            }*/
+            /*console.log("\n\nfor sector: ", sectorId)
+            console.log("angle is: ", angle)
+            console.log("distance is: ", shortestDistance)*/
+
+            obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, shortestDistance);
         }
 
         for (let sectorId = 0; sectorId < obstacleImpactBySector.length; ++sectorId) {
@@ -109,14 +151,17 @@ class PathSearching {
 
         }
 
+        //console.log(NE_BySector)
+
         //we omit division by zero
-        let max_NE = max(NE_BySector) + Config.epsilon;
+        let max_NE = max(NE_BySector);
         let min_NE = min(NE_BySector);
 
         for (let sectorId = 0; sectorId < NE_BySector.length; sectorId++) {
-            NE_BySector[sectorId] = (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
+            NE_BySector[sectorId] = max_NE == 0.0 && min_NE == 0.0 ? 1.0 : (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
         }
 
+        //console.log(NE_BySector)
 
         let ruleNumber = 0;
         // Calculate rule number
@@ -125,11 +170,13 @@ class PathSearching {
                 ruleNumber += Math.pow(2, i);
             }
         }
+        //console.log(ruleNumber)
 
         switch (ruleNumber) {
             // high, high, high, high, high
             case 0:
-                return [this.a.LARGE_NEG, this.s.STOP, NE_BySector[2]];
+                //return [this.a.LARGE_NEG, this.s.STOP, NE_BySector[2]];
+                return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.STOP, NE_BySector[2]] : [this.a.LARGE_NEG, this.s.STOP, NE_BySector[2]];
             // low, high, high, high, high
             case 1:
                 return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
@@ -159,8 +206,8 @@ class PathSearching {
                 return [this.a.SMALL_POS, this.s.SLOW, NE_BySector[2]];
             // high, low, high, low, high
             case 10:
-                //return random(0, 1) === 0 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) > 0.5 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
+                //return [this.a.LARGE_NEG, this.s.SLOW];
             // low, low, high, low, high
             case 11:
                 return [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
@@ -181,8 +228,8 @@ class PathSearching {
                 return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, high, high, high, low
             case 17:
-                //return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                //return [this.a.LARGE_NEG, this.s.SLOW];
             // high, low, high, high, low
             case 18:
                 return [this.a.SMALL_NEG, this.s.SLOW, NE_BySector[2]];
@@ -212,8 +259,8 @@ class PathSearching {
                 return [this.a.LARGE_POS, this.s.SLOW, NE_BySector[2]];
             // low, low, high, low, low
             case 27:
-                //return random(0, 1) === 0 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
-                return [this.a.LARGE_NEG, this.s.SLOW];
+                return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW, NE_BySector[2]];
+                //return [this.a.LARGE_NEG, this.s.SLOW];
             // high, high, low, low, low
             case 28:
                 return [this.a.ZERO, this.s.FAST, NE_BySector[2]];
@@ -244,9 +291,9 @@ class PathSearching {
     }
 
     getImpactOfObstacles(angle, distance) {
-        if (angle < this.ps.OI_ANGLE_BARRIER && distance < this.d.NEAR) {
+        if (angle > this.ps.OI_ANGLE_BARRIER && distance < this.d.NEAR) {
             return 2 * this.ps.OI_MAGNIFIER;
-        } else if (angle < this.ps.OI_ANGLE_BARRIER || distance < this.d.NEAR) {
+        } else if (angle > this.ps.OI_ANGLE_BARRIER || distance < this.d.NEAR) {
             return this.ps.OI_MAGNIFIER;
         } else {
             return 0.0;

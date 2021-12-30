@@ -62,6 +62,11 @@ class VHuman extends VMovingObject{
                 })
             }
             else if (other instanceof VHuman && this !== other) {
+                //if human sensed an assilant
+                if (other.isAssailant && this.category == 1) {
+                    this.category = 2;
+                }
+
                 this.visionArcs.forEach(arc => {
                     if (arc.isPointInArc(this.velocity, other.pos)) {
                         arc.highlight();
@@ -84,6 +89,10 @@ class VHuman extends VMovingObject{
 
                         humansByArc[arc.label.id].push(other);
 
+                        if (other.isAssailant) {
+                            this.category = 3;
+                        }
+
                         // If two objects are about to crash into each other, rotate
                         if (distance < this.size / 2 + other.size / 2) {
                             this.setSpeed(this.obstacleAvoidance.s.STOP);
@@ -103,6 +112,9 @@ class VHuman extends VMovingObject{
         let velocity = 0;
         let a_o, V_o, a_p, V_p, NE_f, a_g, V_g, d_g = 0;
         let d_o_f = distancesByArc[2];
+
+        //there is probability, that human will go back to category 2
+        if (random(0, 1))
 
         if (this.obstacleAvoidance) {
             [a_o, V_o] = this.obstacleAvoidance.getOutput(distancesByArc);
@@ -126,15 +138,15 @@ class VHuman extends VMovingObject{
 
         if (this.pathSearching) {
             [a_p, V_p, NE_f] = this.pathSearching.getOutput(this, humansByArc, staticObjectsByArc);
-            if (this.category == 2) {
-                V_p = (1 - this.pathSearching.cf.K_P_CAT_2) * V_p + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
-            } else if (this.category == 3) {
-                V_p = (1 - this.pathSearching.cf.K_P_CAT_3) * V_p + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
-            }
         }
 
         if (this.integrationOfMultipleBehaviours) {
             let [a, V] = this.integrationOfMultipleBehaviours.getOutput(d_o_f, NE_f, d_g, a_o, a_p, a_g, V_o, V_p, V_g);
+            if (!this.isAssailant && this.category == 2) {
+                V = (1 - this.pathSearching.cf.K_P_CAT_2) * V + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
+            } else if (!this.isAssailant && this.category == 3) {
+                V = (1 - this.pathSearching.cf.K_P_CAT_3) * V + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
+            }
             angle += a;
             velocity += V;
         }

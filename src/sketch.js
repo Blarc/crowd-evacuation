@@ -43,7 +43,7 @@ function setup(){
 
     let deltaIO = new IOdelta(0.2, 0.4, 0.8);
     let speedIO = new IOSpeed(0.3, 0.5, 0.8);
-    let angleIO = new IOAngle(-10, -5, 5, 10);
+    let angleIO = new IOAngle(-50, -20, 20, 50);
     let distanceIO = new IODistance(Config.visionSize / 3.0, Config.visionSize);
     let pathSearchingIO = new IOPathSearching(lowRisk = 0.0, highRisk = 1.0, angleRisk = 15, oiMagnifier = 0.05, oiAngleBarrier = 15, k_w = 0.4, 0.9);
     let panicCoefficientsIO = new IOPanicCoefficients(0.5, 0.9, 0.9);

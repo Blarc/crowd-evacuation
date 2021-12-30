@@ -25,7 +25,7 @@ class PathSearching {
                 
                 let cur_CR = this.getCollisionRisk(distance, speed, angle);
 
-                collisionRiskBySector[sectorId] += (object.isAssailant && human.category == 3) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
+                collisionRiskBySector[sectorId] += (object.isAssailant && human.category == 3 && !human.isAssailant) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
 
                 if (human.isAssailant && human.pickedHuman == object) {
                     pickedHumanSectorId = sectorId;

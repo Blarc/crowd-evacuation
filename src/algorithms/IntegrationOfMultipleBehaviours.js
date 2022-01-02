@@ -55,7 +55,7 @@ class IntegrationOfMultipleBehaviours {
         let alpha = (d_a_o * a_1 + d_s_p * a_2 + d_s_g * a_3) / (d_a_o + d_s_p + d_s_g);
 
         let V = (d_a_o * V_1 + d_s_p * V_2 + d_s_g * V_3) / (d_a_o + d_s_p + d_s_g);
-        
+
         return [alpha, V];
     }
 }

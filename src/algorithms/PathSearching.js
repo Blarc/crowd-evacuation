@@ -22,12 +22,12 @@ class PathSearching {
 
                 let angleToOtherObject = p5.Vector.sub(human.pos, object.pos);
                 let angle = object.velocity.angleBetween(angleToOtherObject);
-                
+
                 let cur_CR = this.getCollisionRisk(distance, speed, angle);
 
-                collisionRiskBySector[sectorId] += (object.isAssailant && human.category == 3 && !human.isAssailant) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
+                collisionRiskBySector[sectorId] += (object.isAssailant && human.category === 3 && !human.isAssailant) ? cur_CR + this.cf.K_C_CAT_3 * cur_CR : cur_CR;
 
-                if (human.isAssailant && human.pickedHuman == object) {
+                if (human.isAssailant && human.pickedHuman === object) {
                     pickedHumanSectorId = sectorId;
                 }
             }
@@ -42,7 +42,7 @@ class PathSearching {
 
             let lines = arc.getArcLines(human.velocity);
 
-            
+
             for (let line of lines) {
 
                 let anyIntersection = false;
@@ -55,7 +55,6 @@ class PathSearching {
                         anyIntersection = true;
                     }
 
-                    let curShortestDistanceToIntersection = Infinity;
                     for (let intersection of intersections) {
                         let curDistance = p5.Vector.dist(human.pos, intersection);
                         if (curDistance < shortestDistance) {
@@ -66,85 +65,18 @@ class PathSearching {
 
                 if (prevIntersection && anyIntersection > 0) {
                     angle += Config.arcSize / Config.numberOfControlLines;
-                } else if (anyIntersection > 0) {
-                    prevIntersection = true;
                 } else {
-                    prevIntersection = false;
+                    prevIntersection = anyIntersection > 0;
                 }
 
             }
-
-            /*let [leftLine, rightLine, arcLine] = arc.getArcLines(human.velocity);
-
-            let leftLineIntersections = object.rect.getIntersections(leftLine);
-            let rightLineIntersections = object.rect.getIntersections(rightLine);
-            let arcIntersections = object.rect.getIntersections(arcLine);
-
-            let allIntersections = leftLineIntersections.concat(rightLineIntersections);
-            allIntersections = allIntersections.concat(arcIntersections);
-            for (let intersection of allIntersections) {
-                let curDistance = p5.Vector.dist(human.pos, intersection);
-                if (curDistance < distance) distance = curDistance;
-            }
-
-            if (leftLineIntersections.length >= 1 && rightLineIntersections.length >= 1) {
-                angle = abs(arc.endVisionAngle - arc.startVisionAngle);
-            } else if (leftLineIntersections.length >= 1 && arcIntersections.length >= 1) {
-                let leftLineVector = leftLineIntersections[0].sub(human.pos);
-                let arcLineVector = arcIntersections[0].sub(human.pos);
-
-                angle = leftLineVector.angleBetween(arcLineVector);
-            } else if (rightLineIntersections.length >= 1 && arcIntersections.length >= 1) {
-                let rightLineVector = rightLineIntersections[0].sub(human.pos);
-                let arcLineVector = arcIntersections[0].sub(human.pos);
-
-                angle = rightLineVector.angleBetween(arcLineVector);
-            } else if (arcIntersections.length >= 2) {
-                let arcLineVector1 = arcIntersections[0].sub(human.pos);
-                let arcLineVector2 = arcIntersections[1].sub(human.pos);
-
-                angle = arcLineVector1.angleBetween(arcLineVector2);
-            } else if (leftLineIntersections.length >= 1) {
-                let point = object.rect.getNearestPointTo(human)
-
-                let leftLineVector = leftLineIntersections[0].sub(human.pos);
-                let squareEdgeVector = point.sub(human.pos);
-
-                angle = leftLineVector.angleBetween(squareEdgeVector);
-            } else if (rightLineIntersections.length >= 1) {
-                let point = object.rect.getNearestPointTo(human)
-
-                let rightLineVector = rightLineIntersections[0].sub(human.pos);
-                let squareEdgeVector = point.sub(human.pos);
-
-                angle = rightLineVector.angleBetween(squareEdgeVector);
-            } else if (arcIntersections.length >= 1) {
-                let point = object.rect.getNearestPointTo(human)
-
-                let arcLineVector = arcIntersections[0].sub(human.pos);
-                let squareEdgeVector = point.sub(human.pos);
-
-                angle = arcLineVector.angleBetween(squareEdgeVector);
-            }
-            else {
-                console.log("leftLineIntersections length: ", leftLineIntersections.length, "right intersections length: ", rightLineIntersections.length, "arc intersections length: ", arcIntersections.length)
-                //throw new Error("Unpredicted behaviour");
-            }
-            
-            angle += angle;
-            if (distance < shortestDistance) {
-                shortestDistance = distance;
-            }*/
-            /*console.log("\n\nfor sector: ", sectorId)
-            console.log("angle is: ", angle)
-            console.log("distance is: ", shortestDistance)*/
 
             obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, shortestDistance);
         }
 
         for (let sectorId = 0; sectorId < obstacleImpactBySector.length; ++sectorId) {
             if (human.isAssailant) {
-                NE_BySector[sectorId] = sectorId == pickedHumanSectorId ? 0 : 1;
+                NE_BySector[sectorId] = sectorId === pickedHumanSectorId ? 0 : 1;
             } else {
                 NE_BySector[sectorId] = this.ps.K_W * obstacleImpactBySector[sectorId] + (1 - this.ps.K_W) * collisionRiskBySector[sectorId];
             }
@@ -158,7 +90,7 @@ class PathSearching {
         let min_NE = min(NE_BySector);
 
         for (let sectorId = 0; sectorId < NE_BySector.length; sectorId++) {
-            NE_BySector[sectorId] = max_NE == 0.0 && min_NE == 0.0 ? 1.0 : (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
+            NE_BySector[sectorId] = max_NE === 0.0 && min_NE === 0.0 ? 1.0 : (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
         }
 
         //console.log(NE_BySector)

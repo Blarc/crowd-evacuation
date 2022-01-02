@@ -5,7 +5,7 @@ let createdWalls = new Set();
 
 let baseVector;
 let pause = false;
-let goal;
+let globalGoal;
 
 let mouseMode;
 
@@ -36,7 +36,7 @@ function setup(){
 
     mouseMode = ModeEnum.SET_GOAL;
     baseVector = createVector(1, 0);
-    goal = createVector(random(50, width - 50), random(50, height - 50))
+    globalGoal = createVector(random(50, width - 50), random(50, height - 50))
 
     // Create quadtree as big as the room
     quadTree = QuadTree.create();
@@ -45,7 +45,7 @@ function setup(){
     let speedIO = new IOSpeed(0.3, 0.5, 0.8);
     let angleIO = new IOAngle(-50, -20, 20, 50);
     let distanceIO = new IODistance(Config.visionSize / 3.0, Config.visionSize);
-    let pathSearchingIO = new IOPathSearching(lowRisk = 0.0, highRisk = 1.0, angleRisk = 15, oiMagnifier = 0.05, oiAngleBarrier = 15, k_w = 0.4, 0.9);
+    let pathSearchingIO = new IOPathSearching(0.0, 1.0, 15, 0.05, 15, 0.4, 0.9);
     let panicCoefficientsIO = new IOPanicCoefficients(0.5, 0.9, 0.9);
 
     obstacleAvoidance = new ObstacleAvoidance(speedIO, angleIO, distanceIO);
@@ -84,7 +84,7 @@ function draw() {
         quadTree.insert(point);
         cWall.show();
     }
-    
+
     for (let vObject of vObjects) {
         vObject.show();
         !pause && vObject.update();
@@ -98,26 +98,16 @@ function mousePressed() {
     // Empty
     switch (mouseMode) {
         case ModeEnum.SET_GOAL:
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
-                mouseIsPressed
-            ) {
-                goal = createVector(mouseX, mouseY);
+            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
+                globalGoal = createVector(mouseX, mouseY);
             }
             return;
 
         case ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL:
 
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
-                mouseIsPressed
-            ) {
+            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
 
-                if (curPedestrianPosition != undefined) {
+                if (curPedestrianPosition !== undefined) {
                     let vObject = new VHuman(curPedestrianPosition.x, curPedestrianPosition.y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, mouseX, mouseY);
                     vObjects.push(vObject);
                     curPedestrianPosition = undefined;
@@ -129,12 +119,7 @@ function mousePressed() {
             return;
 
         case ModeEnum.DRAW_PEDESTRIANS:
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
-                mouseIsPressed
-            ) {
+            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
 
                 let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
                 vObjects.push(vObject);
@@ -143,12 +128,7 @@ function mousePressed() {
             return;
 
         case ModeEnum.DRAW_ASSAILANTS:
-            if (Config.blockSize * 2 < mouseX &&
-                mouseX < width - Config.blockSize * 2 &&
-                Config.blockSize * 2 < mouseY &&
-                mouseY < height - Config.blockSize * 2 &&
-                mouseIsPressed
-            ) {
+            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
 
                 let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, -1, -1, true);
                 vObjects.push(vObject);
@@ -203,7 +183,14 @@ function windowResized() {
 function showGoal() {
     fill(0, 255, 0);
     noStroke();
-    ellipse(goal.x, goal.y, 10);
+    ellipse(globalGoal.x, globalGoal.y, 10);
+}
+
+function isMouseInBounds(padding) {
+    return padding < mouseX &&
+    mouseX < width - padding &&
+        padding < mouseY &&
+    mouseY < height - padding
 }
 
 function drawMouse() {
@@ -242,12 +229,7 @@ function drawMouse() {
                 }
             }
 
-            if (Config.blockSize < mouseX &&
-                mouseX < width - Config.blockSize &&
-                Config.blockSize < mouseY &&
-                mouseY < height - Config.blockSize &&
-                mouseIsPressed
-            ) {
+            if (isMouseInBounds(Config.blockSize) && mouseIsPressed) {
                 for (let i = 0; i < size; i++) {
                     for (let j = 0; j < size; j++) {
 
@@ -270,14 +252,14 @@ function createWallBoundaries() {
 
     // place bricks top-down
     for (let y = 0; y <= height - Config.blockSize; y += Config.blockSize) {
-        let wallLeft = new VBlock(Config.blockSize / 2, y + Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
-        let wallRight = new VBlock(width - Config.blockSize / 2, y + Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
+        let wallLeft = new VBlock(Config.blockSize / 2, y + Config.blockSize / 2, Config.basicWallColor, true);
+        let wallRight = new VBlock(width - Config.blockSize / 2, y + Config.blockSize / 2, Config.basicWallColor, true);
         walls.push(wallLeft, wallRight);
     }
 
     for (let x = 0; x <= width - Config.blockSize; x += Config.blockSize) {
-        let wallTop = new VBlock(x + Config.blockSize / 2, Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
-        let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2, color = Config.basicWallColor, isOuterWall = true);
+        let wallTop = new VBlock(x + Config.blockSize / 2, Config.blockSize / 2, Config.basicWallColor, true);
+        let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2, Config.basicWallColor, true);
         walls.push(wallTop, wallBottom);
     }
 }

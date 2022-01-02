@@ -38,7 +38,8 @@ class VHuman extends VMovingObject{
         let curNearestHuman, curShortestDistance;
 
         //only if we choose simple tactic for assailant, that picks the nearest human in room
-        if (this.isAssailant && !this.pickedHuman) {
+        let foundHumanPickedForGoal = false;
+        if (this.isAssailant) {
             curNearestHuman = undefined;
             curShortestDistance = Infinity;
         }
@@ -77,6 +78,11 @@ class VHuman extends VMovingObject{
                         }
 
                         if (this.isAssailant && other.isAlive) {
+                            //if we don't see picked human anymore, that means human managed to escape assailant
+                            if (other == this.pickedHuman) {
+                                foundHumanPickedForGoal = true;
+                            }
+
                             if (!other.isAssailant && distance < curShortestDistance) {
                                 curNearestHuman = other;
                                 curShortestDistance = distance;
@@ -104,7 +110,7 @@ class VHuman extends VMovingObject{
             }
         }
 
-        if (this.isAssailant && !this.pickedHuman && curNearestHuman) {
+        if (this.isAssailant && !foundHumanPickedForGoal && curNearestHuman) {
             this.pickedHuman = curNearestHuman;
             this.goal = curNearestHuman.pos;
         }

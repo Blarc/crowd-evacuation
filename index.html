@@ -40,12 +40,17 @@
     <div id="canvas">
         <p>You can find the code <a href="https://github.com/Blarc/crowd-evacuation" target="_blank">here</a>.</p>
         <p><input type="file" accept="application/json" id="upload"/></p>
+        <p>
+            <label>Width <input id="width" type="number"/></label>
+            <label>Height <input id="height" type="number"/></label>
+            <button id="sizeButton">Set</button></p>
         <div id="canvas-controls">
             <p>Pause: <strong>SPACE</strong></p>
             <p>Set goal: <strong>G</strong></p>
             <p>Draw obstacles: <strong>D</strong></p>
             <p>Draw pedestrians: <strong>P</strong></p>
             <p>Draw assailant: <strong>A</strong></p>
+            <p>Save: <strong>S</strong></p>
         </div>
         <div id="canvas-controls">
             <p>Frames: <strong><span id="frames"></span></strong> </p>

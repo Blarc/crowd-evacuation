@@ -1,6 +1,6 @@
 let quadTree;
 let vObjects = [];
-const walls = [];
+let walls = [];
 let createdWalls = new Set();
 
 let baseVector;
@@ -9,18 +9,17 @@ let globalGoal;
 
 let mouseMode;
 
-let sizeSlider;
-let fileUploader;
-let fileReader;
+// Dom elements
+let canvas, sizeSlider, fileUploader, fileReader, widthInput, heightInput, sizeButton;
 
 let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviours;
 
 let curPedestrianPosition = undefined;
 
 function createUI() {
-    let w = windowWidth * 0.9;
-    let h = windowHeight * 0.9;
-    let canvas = createCanvas(w - w % Config.blockSize, h - h % Config.blockSize);
+    let w = 800;
+    let h = 600;
+    canvas = createCanvas(w - w % Config.blockSize, h - h % Config.blockSize);
     canvas.parent('canvas');
 
     sizeSlider = createSlider(1,10,1,1);
@@ -32,6 +31,11 @@ function createUI() {
 
     fileReader = new FileReader();
     fileReader.addEventListener('load', readFile, false);
+
+    widthInput = document.getElementById('width')
+    heightInput = document.getElementById('height')
+    sizeButton = document.getElementById('sizeButton')
+    sizeButton.addEventListener('click', onSizeChange, false)
 }
 
 function setup(){
@@ -296,7 +300,7 @@ function createWallBoundaries() {
 }
 
 function downloadMap() {
-    let data = JSON.stringify({walls: [...createdWalls], vObjects});
+    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects});
     let a = document.createElement('a');
     let file = new Blob([data], {type: 'application/json'});
     a.href = URL.createObjectURL(file);
@@ -313,6 +317,8 @@ function uploadMap() {
 
 function readFile(e) {
     let parsed = JSON.parse(e.target.result);
+
+    setSize(parsed.width, parsed.height);
 
     parsed.vObjects.forEach(vObject => {
         vObjects.push(
@@ -336,4 +342,19 @@ function readFile(e) {
         createdWalls.add(tmp);
     })
     fileUploader.value = null;
+}
+
+function onSizeChange(e) {
+    if (widthInput.value && heightInput.value && widthInput.value <= 3000 && heightInput.value <= 3000) {
+        setSize(parseInt(widthInput.value), parseInt(heightInput.value));
+    }
+}
+
+function setSize(newWidth, newHeight) {
+    resizeCanvas(newWidth, newHeight);
+    walls = [];
+    createdWalls = new Set();
+    vObjects = [];
+    globalGoal = createVector(random(50, width - 50), random(50, height - 50))
+    createWallBoundaries();
 }

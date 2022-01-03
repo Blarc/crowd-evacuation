@@ -144,7 +144,7 @@ class VHuman extends VMovingObject{
         }
 
         if (this.pathSearching) {
-            [a_p, V_p, NE_f] = this.pathSearching.getOutput(this, humansByArc, staticObjectsByArc);
+            [a_p, V_p, NE_f] = this.pathSearching.getOutput(this, humansByArc, staticObjectsByArc, distancesByArc);
         }
 
         if (this.integrationOfMultipleBehaviours) {

@@ -7,7 +7,7 @@ class PathSearching {
         this.cf = panicCoefficientsIO;
     }
 
-    getOutput(human, humansBySector, staticObjectsBySearching) {
+    getOutput(human, humansBySector, staticObjectsBySearching, objectsBySector) {
 
         let NE_BySector = [Infinity, Infinity, Infinity, Infinity, Infinity];
 
@@ -49,18 +49,21 @@ class PathSearching {
 
                 for (let object of sector) {
 
-                    let intersections = object.isOuterWall ? [] : object.rect.getIntersections(line);
+                    let intersection = object.isOuterWall ? [] : object.rect.getIntersection(line);
 
-                    if (intersections.length > 0) {
+                    if (intersection) {
                         anyIntersection = true;
                     }
 
+                    /*
+                    //This is better way for getting required shortest distance, but it's also a lot slower
                     for (let intersection of intersections) {
                         let curDistance = p5.Vector.dist(human.pos, intersection);
                         if (curDistance < shortestDistance) {
                             shortestDistance = curDistance;
                         }
                     }
+                    */
                 }
 
                 if (prevIntersection && anyIntersection > 0) {
@@ -71,7 +74,7 @@ class PathSearching {
 
             }
 
-            obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, shortestDistance);
+            obstacleImpactBySector[sectorId] += this.getImpactOfObstacles(angle, objectsBySector[sectorId]);
         }
 
         for (let sectorId = 0; sectorId < obstacleImpactBySector.length; ++sectorId) {

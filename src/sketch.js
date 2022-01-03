@@ -16,8 +16,8 @@ let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviou
 let curPedestrianPosition = undefined;
 
 function createUI() {
-    let w = windowWidth * 0.8;
-    let h = windowHeight * 0.5;
+    let w = windowWidth * 0.9;
+    let h = windowHeight * 0.9;
     let canvas = createCanvas(w - w % Config.blockSize, h - h % Config.blockSize);
     canvas.parent('canvas');
 
@@ -207,6 +207,9 @@ function drawMouse() {
                     let object = point.userData;
                     if (object instanceof VBlock && createdWalls.has(object)) {
                         createdWalls.delete(object);
+                    }
+                    if (object instanceof VHuman && vObjects.includes(object)) {
+                        vObjects.splice(vObjects.indexOf(object), 1);
                     }
                 }
             }

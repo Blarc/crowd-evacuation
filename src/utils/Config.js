@@ -8,7 +8,7 @@ class Config {
     static debug = true;
     static showLines = false;
 
-    static numberOfControlLines = 5;
+    static numberOfControlLines = 10;
     static arcSize = 20;
 
 

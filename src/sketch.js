@@ -10,6 +10,8 @@ let globalGoal;
 let mouseMode;
 
 let sizeSlider;
+let fileUploader;
+let fileReader;
 
 let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviours;
 
@@ -24,6 +26,12 @@ function createUI() {
     sizeSlider = createSlider(1,10,1,1);
     sizeSlider.parent('size');
     sizeSlider.style('width', '80px');
+
+    fileUploader = document.getElementById('upload');
+    fileUploader.addEventListener('change', uploadMap, false);
+
+    fileReader = new FileReader();
+    fileReader.addEventListener('load', readFile, false);
 }
 
 function setup(){
@@ -95,46 +103,62 @@ function draw() {
 }
 
 function mousePressed() {
-    // Empty
-    switch (mouseMode) {
-        case ModeEnum.SET_GOAL:
-            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
+    if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
+        switch (mouseMode) {
+            case ModeEnum.SET_GOAL:
                 globalGoal = createVector(mouseX, mouseY);
-            }
-            return;
+                return;
 
-        case ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL:
-
-            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
-
+            case ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL:
                 if (curPedestrianPosition !== undefined) {
-                    let vObject = new VHuman(curPedestrianPosition.x, curPedestrianPosition.y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, mouseX, mouseY);
-                    vObjects.push(vObject);
+                    vObjects.push(
+                        new VHuman(
+                            curPedestrianPosition.x,
+                            curPedestrianPosition.y,
+                            Config.visionSize,
+                            obstacleAvoidance,
+                            goalSeeking,
+                            pathSearching,
+                            integrationOfMultipleBehaviours,
+                            mouseX, mouseY)
+                        );
                     curPedestrianPosition = undefined;
                 } else {
                     curPedestrianPosition = createVector(mouseX, mouseY);
                 }
+                return;
 
-            }
-            return;
+            case ModeEnum.DRAW_PEDESTRIANS:
+                vObjects.push(
+                    new VHuman(
+                        mouseX,
+                        mouseY,
+                        Config.visionSize,
+                        obstacleAvoidance,
+                        goalSeeking,
+                        pathSearching,
+                        integrationOfMultipleBehaviours
+                    )
+                );
+                return;
 
-        case ModeEnum.DRAW_PEDESTRIANS:
-            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
-
-                let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
-                vObjects.push(vObject);
-
-            }
-            return;
-
-        case ModeEnum.DRAW_ASSAILANTS:
-            if (isMouseInBounds(2 * Config.blockSize) && mouseIsPressed) {
-
-                let vObject = new VHuman(mouseX, mouseY, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours, -1, -1, true);
-                vObjects.push(vObject);
-
-            }
-            return;
+            case ModeEnum.DRAW_ASSAILANTS:
+                vObjects.push(
+                        new VHuman(
+                        curPedestrianPosition.x,
+                        curPedestrianPosition.y,
+                        Config.visionSize,
+                        obstacleAvoidance,
+                        goalSeeking,
+                        pathSearching,
+                        integrationOfMultipleBehaviours,
+                        -1,
+                        -1,
+                        true
+                    )
+                );
+                return;
+        }
     }
 }
 
@@ -144,9 +168,9 @@ function keyPressed() {
         case 32:
             pause = !pause;
             return;
-        // P - draw pedestrians
-        case 80:
-            mouseMode = ModeEnum.DRAW_PEDESTRIANS;
+        // A - draw assailants
+        case 65:
+            mouseMode = ModeEnum.DRAW_ASSAILANTS;
             return;
         // C - clear
         case 67:
@@ -169,9 +193,13 @@ function keyPressed() {
         case 73:
             mouseMode = ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL;
             return;
-        // A - draw assailants
-        case 65:
-            mouseMode = ModeEnum.DRAW_ASSAILANTS;
+        // P - draw pedestrians
+        case 80:
+            mouseMode = ModeEnum.DRAW_PEDESTRIANS;
+            return;
+        // S - save
+        case 83:
+            downloadMap();
             return;
     }
 }
@@ -265,4 +293,47 @@ function createWallBoundaries() {
         let wallBottom = new VBlock(x + Config.blockSize / 2, height - Config.blockSize / 2, Config.basicWallColor, true);
         walls.push(wallTop, wallBottom);
     }
+}
+
+function downloadMap() {
+    let data = JSON.stringify({walls: [...createdWalls], vObjects});
+    let a = document.createElement('a');
+    let file = new Blob([data], {type: 'application/json'});
+    a.href = URL.createObjectURL(file);
+    a.download = 'save.json';
+    a.click();
+}
+
+function uploadMap() {
+    let file = fileUploader.files[0]
+    if (file.type === 'application/json') {
+        fileReader.readAsText(file);
+    }
+}
+
+function readFile(e) {
+    let parsed = JSON.parse(e.target.result);
+
+    parsed.vObjects.forEach(vObject => {
+        vObjects.push(
+            new VHuman(
+                vObject.pos.x,
+                vObject.pos.y,
+                Config.visionSize,
+                obstacleAvoidance,
+                goalSeeking,
+                pathSearching,
+                integrationOfMultipleBehaviours,
+                vObject.goal ? vObject.goal.x : -1,
+                vObject.goal ? vObject.goal.y : -1,
+                vObject.isAssailant
+            )
+        );
+    });
+
+    parsed.walls.forEach(wall => {
+        let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, false);
+        createdWalls.add(tmp);
+    })
+    fileUploader.value = null;
 }

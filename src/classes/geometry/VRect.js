@@ -14,7 +14,7 @@ class VRect {
     }
 
     hasSamePosition(rect) {
-        return this.pos.x == rect.pos.x && this.pos.y == rect.pos.y;
+        return this.pos.x === rect.pos.x && this.pos.y === rect.pos.y;
     }
 
     getRectLines() {
@@ -51,7 +51,7 @@ class VRect {
     }
 
     getNearestPointTo(object) {
-        let nearestPoint; 
+        let nearestPoint;
         let shortestDistance = Infinity;
 
         let points = [this.upperLeftCorner(), this.upperRightCorner(), this.bottomLeftCorner(), this.bottomRightCorner()]

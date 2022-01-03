@@ -20,6 +20,17 @@ class VHuman extends VMovingObject{
         }
     }
 
+    toJSON() {
+        return {
+            pos: {x: this.pos.x, y: this.pos.y},
+            color: this.color,
+            velocity: {x: this.velocity.x, y: this.velocity.y},
+            velocityMag: this.velocityMag,
+            isAssailant: this.isAssailant,
+            goal: this.goal ? {x: this.goal.x, y: this.goal.y} : undefined
+        }
+    }
+
     update() {
         if (!this.isAlive) {
             this.color = Config.deadHumanColor;

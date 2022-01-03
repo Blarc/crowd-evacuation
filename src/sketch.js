@@ -6,6 +6,13 @@ let createdWalls = new Set();
 let baseVector;
 let pause = false;
 let globalGoal;
+let useGlobalAndLocalGoals = false;
+let evacuationMode = false;
+
+let globalSavedPeopleCounter = 0;
+let globalDeathTollCounter = 0;
+let numberOfPedestrians = 0;
+let numberOfAssailants = 0;
 
 let mouseMode;
 
@@ -43,6 +50,12 @@ function setup(){
     createUI();
     setInterval(() => {
         document.getElementById('frames').innerHTML = round(frameRate(), 2);
+        document.getElementById('survivors_count').innerHTML = "Survivors: " + globalSavedPeopleCounter;
+        document.getElementById('killed_count').innerHTML = "Killed: " + globalDeathTollCounter;
+        document.getElementById('num_pedestrians').innerHTML = "Number of pedestrians: " + numberOfPedestrians;
+        document.getElementById('num_assailants').innerHTML = "Number of assailants: " + numberOfAssailants;
+        document.getElementById('pause_resume').innerHTML = pause ? "Resume: <strong>SPACE</strong>" : "Pause: <strong>SPACE</strong>";
+        document.getElementById('use_global_and_local_goals').innerHTML = useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
     }, 200);
 
 
@@ -77,6 +90,8 @@ function setup(){
 }
 
 function draw() {
+    numberOfPedestrians = 0;
+    numberOfAssailants = 0;
     quadTree = QuadTree.create();
     background(51);
 
@@ -98,6 +113,14 @@ function draw() {
     }
 
     for (let vObject of vObjects) {
+        if (vObject instanceof VHuman) {
+            if (vObject.isAssailant) {
+                numberOfAssailants += 1;
+            } else {
+                numberOfPedestrians += 1;
+            }
+        }
+
         vObject.show();
         !pause && vObject.update();
     }
@@ -147,10 +170,11 @@ function mousePressed() {
                 return;
 
             case ModeEnum.DRAW_ASSAILANTS:
+                evacuationMode = true;
                 vObjects.push(
                         new VHuman(
-                        curPedestrianPosition.x,
-                        curPedestrianPosition.y,
+                        mouseX,
+                        mouseY,
                         Config.visionSize,
                         obstacleAvoidance,
                         goalSeeking,
@@ -200,6 +224,15 @@ function keyPressed() {
         // P - draw pedestrians
         case 80:
             mouseMode = ModeEnum.DRAW_PEDESTRIANS;
+            return;
+        // R - reset counters
+        case 82:
+            globalSavedPeopleCounter = 0;
+            globalDeathTollCounter = 0;
+            return;
+        // U - follow unfollow global and local goals when not in pannic
+        case 85:
+            useGlobalAndLocalGoals = !useGlobalAndLocalGoals;
             return;
         // S - save
         case 83:
@@ -300,7 +333,7 @@ function createWallBoundaries() {
 }
 
 function downloadMap() {
-    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects});
+    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals});
     let a = document.createElement('a');
     let file = new Blob([data], {type: 'application/json'});
     a.href = URL.createObjectURL(file);
@@ -316,6 +349,11 @@ function uploadMap() {
 }
 
 function readFile(e) {
+    pause = true;
+    evacuationMode = false;
+    globalSavedPeopleCounter = 0;
+    globalDeathTollCounter = 0;
+
     let parsed = JSON.parse(e.target.result);
 
     setSize(parsed.width, parsed.height);
@@ -335,12 +373,21 @@ function readFile(e) {
                 vObject.isAssailant
             )
         );
+
+        if (vObject.isAssailant) {
+            evacuationMode = true;
+        }
     });
 
     parsed.walls.forEach(wall => {
         let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, false);
         createdWalls.add(tmp);
     })
+
+    globalGoal = createVector(parsed.globalGoalX, parsed.globalGoalY);
+
+    useGlobalAndLocalGoals = parsed.useGlobalAndLocalGoals;
+
     fileUploader.value = null;
 }
 

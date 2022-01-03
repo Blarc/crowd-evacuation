@@ -86,17 +86,12 @@ class PathSearching {
 
         }
 
-        //console.log(NE_BySector)
-
-        //we omit division by zero
         let max_NE = max(NE_BySector);
         let min_NE = min(NE_BySector);
 
         for (let sectorId = 0; sectorId < NE_BySector.length; sectorId++) {
-            NE_BySector[sectorId] = max_NE === 0.0 && min_NE === 0.0 ? 1.0 : (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
+            NE_BySector[sectorId] = max_NE === min_NE ? 1.0 : (max_NE - NE_BySector[sectorId]) / (max_NE - min_NE);
         }
-
-        //console.log(NE_BySector)
 
         let ruleNumber = 0;
         // Calculate rule number
@@ -105,7 +100,6 @@ class PathSearching {
                 ruleNumber += Math.pow(2, i);
             }
         }
-        //console.log(ruleNumber)
 
         switch (ruleNumber) {
             // high, high, high, high, high

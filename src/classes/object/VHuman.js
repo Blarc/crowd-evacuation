@@ -53,6 +53,9 @@ class VHuman extends VMovingObject{
         if (this.isAssailant) {
             curNearestHuman = undefined;
             curShortestDistance = Infinity;
+            if (!vObjects.includes(this.pickedHuman) || !this.pickedHuman.isAlive) {
+                this.goal = undefined;
+            }
         }
 
         for (let point of points) {
@@ -103,6 +106,7 @@ class VHuman extends VMovingObject{
                                 other.isAlive = false;
                                 this.pickedHuman = undefined;
                                 this.goal = undefined;
+                                globalDeathTollCounter += 1;
                             }
                         }
 
@@ -141,10 +145,26 @@ class VHuman extends VMovingObject{
         if (this.goalSeeking) {
             //if assailant doesn't see any target
             if (!this.goal && this.isAssailant) {
+                V_g = this.goalSeeking.s.FAST;
+                //simple room searching algorithm
+                if (random(0, 1) > 0.5) {
+                    let newAngle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
+                    a_g = newAngle;
+                } else {
+                    a_g = this.goalSeeking.a.ZERO;
+                }
+                this.prevGoalSeekingAngle = a_g;
+            } 
+            // if there is no goal defined for simple pedestrians
+            else if (!useGlobalAndLocalGoals && this.category == 1) {
                 V_g = this.goalSeeking.s.SLOW;
                 //simple room searching algorithm
-                let newAngle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
-                a_g = 0.9 * this.prevGoalSeekingAngle + 0.1 * newAngle;
+                if (random(0, 1) > 0.9) {
+                    let newAngle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
+                    a_g = newAngle;
+                } else {
+                    a_g = this.goalSeeking.a.ZERO;
+                }
                 this.prevGoalSeekingAngle = a_g;
             }
             else if (!this.goal) {
@@ -164,6 +184,8 @@ class VHuman extends VMovingObject{
                 V = (1 - this.pathSearching.cf.K_P_CAT_2) * V + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
             } else if (!this.isAssailant && this.category === 3) {
                 V = (1 - this.pathSearching.cf.K_P_CAT_3) * V + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
+            } else if (this.isAssailant && this.goal) {
+                V = this.pathSearching.s.MAX_SPEED;
             }
             angle += a;
             velocity += V;
@@ -205,11 +227,16 @@ class VHuman extends VMovingObject{
     }
 
     checkGoal() {
-        if (!this.goal && p5.Vector.dist(this.pos, globalGoal) < 5) {
-            globalGoal = createVector(random(50, width - 50), random(50, height - 50))
-        } else if (this.goal && p5.Vector.dist(this.pos, this.goal) < 5) {
-            this.pos.x = this.startingPos.x;
-            this.pos.y = this.startingPos.y;
+        if (!this.isAssailant && 
+            ((this.goal && p5.Vector.dist(this.pos, this.goal) < 5) || 
+            (!this.goal && p5.Vector.dist(this.pos, globalGoal) < 5))) {
+                if (!evacuationMode && useGlobalAndLocalGoals) {
+                    this.pos.x = this.startingPos.x;
+                    this.pos.y = this.startingPos.y;
+                } else if (evacuationMode) {
+                    globalSavedPeopleCounter += 1;
+                    vObjects.splice(vObjects.indexOf(this), 1);
+                }
         }
     }
 }

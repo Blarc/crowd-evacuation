@@ -248,10 +248,6 @@ function keyPressed() {
     }
 }
 
-function windowResized() {
-    // TODO
-}
-
 function showGoal() {
     fill(0, 255, 0);
     noStroke();

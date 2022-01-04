@@ -23,7 +23,6 @@ class ObstacleAvoidance {
         switch (ruleNumber) {
             // near, near, near, near, near
             case 0:
-                //return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.STOP] : [this.a.LARGE_NEG, this.s.STOP];
                 return [this.a.LARGE_NEG, this.s.STOP];
             // far, near, near, near, near
             case 1:
@@ -55,7 +54,6 @@ class ObstacleAvoidance {
             // near, far, near, far, near
             case 10:
                 return random(0, 1) > 0.5 ? [this.a.SMALL_POS, this.s.SLOW] : [this.a.SMALL_NEG, this.s.SLOW];
-                //return [this.a.SMALL_NEG, this.s.SLOW];
             // far, far, near, far, near
             case 11:
                 return [this.a.LARGE_NEG, this.s.SLOW];
@@ -77,7 +75,6 @@ class ObstacleAvoidance {
             // far, near, near, near, far
             case 17:
                 return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
-                //return [this.a.LARGE_NEG, this.s.SLOW];
             // near, far, near, near, far
             case 18:
                 return [this.a.SMALL_NEG, this.s.SLOW];
@@ -108,7 +105,6 @@ class ObstacleAvoidance {
             // far, far, near, far, far
             case 27:
                 return random(0, 1) > 0.5 ? [this.a.LARGE_POS, this.s.SLOW] : [this.a.LARGE_NEG, this.s.SLOW];
-                //return [this.a.LARGE_NEG, this.s.SLOW];
             // near, near, far, far, far
             case 28:
                 return [this.a.ZERO, this.s.FAST];

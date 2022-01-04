@@ -10,4 +10,10 @@ class VBlock extends VObject{
         this.rect.show(this.color);
     }
 
+    toJSON() {
+        return {
+            pos: {x: this.pos.x, y: this.pos.y, isOuterWall: this.isOuterWall}
+        }
+    }
+
 }

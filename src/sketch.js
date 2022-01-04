@@ -308,7 +308,7 @@ function drawMouse() {
                 for (let i = 0; i < size; i++) {
                     for (let j = 0; j < size; j++) {
 
-                        let newBlock = new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, [255, 0, 0]);
+                        let newBlock = new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, Config.createWallColor);
                         let isOnSamePositionAsOneOfExistingBlocks = false;
                         for (let block of createdWalls) {
                             if (block.rect.hasSamePosition(newBlock)) {
@@ -394,7 +394,7 @@ function setSimulation() {
     });
 
     currentSimulation.walls.forEach(wall => {
-        let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, wall.isOuterWall);
+        let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.createdWallColor, wall.isOuterWall);
         createdWalls.add(tmp);
     })
 

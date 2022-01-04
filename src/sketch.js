@@ -23,8 +23,8 @@ let obstacleAvoidance, pathSearching, goalSeeking, integrationOfMultipleBehaviou
 let curPedestrianPosition = undefined;
 
 function createUI() {
-    let w = 800;
-    let h = 600;
+    let w = windowWidth * 0.6;
+    let h = windowHeight * 0.4;
     canvas = createCanvas(w - w % Config.blockSize, h - h % Config.blockSize);
     canvas.parent('canvas');
 
@@ -49,11 +49,13 @@ function setup(){
     createUI();
     setInterval(() => {
         document.getElementById('frames').innerHTML = round(frameRate(), 2);
-        document.getElementById('survivors_count').innerHTML = "Survivors: " + globalSavedPeopleCounter;
-        document.getElementById('killed_count').innerHTML = "Killed: " + globalDeathTollCounter;
-        document.getElementById('num_pedestrians').innerHTML = "Number of pedestrians: " + numberOfPedestrians;
-        document.getElementById('num_assailants').innerHTML = "Number of assailants: " + numberOfAssailants;
-        document.getElementById('pause_resume').innerHTML = pause ? "Resume: <strong>SPACE</strong>" : "Pause: <strong>SPACE</strong>";
+        document.getElementById('survivors_count').innerHTML = globalSavedPeopleCounter;
+        document.getElementById('killed_count').innerHTML = globalDeathTollCounter;
+        document.getElementById('num_pedestrians').innerHTML = numberOfPedestrians;
+        document.getElementById('num_assailants').innerHTML = numberOfAssailants;
+        document.getElementById('pause_resume').innerHTML = pause ? "Resume" : "Pause";
+        document.getElementById('show_hide_pedestrian').innerHTML = Config.showPedestrianArcs ? "Hide" : "Show";
+        document.getElementById('show_hide_assailant').innerHTML = Config.showAssailantArcs ? "Hide" : "Show";
         document.getElementById('use_global_and_local_goals').innerHTML = Config.useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
     }, 200);
 

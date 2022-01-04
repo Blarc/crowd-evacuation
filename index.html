@@ -37,9 +37,9 @@
 </head>
 <body>
     <h1>Crowd evacuation simulation</h1>
-    <div>
-        <p id="survivors_count" style="text-align:center">Survivors: 0</p>
-        <p id="killed_count" style="text-align:center">Killed: 0</p>
+    <div id="canvas-controls" style="justify-content: center">
+        <p>Survivors: <strong><span id="survivors_count"></span></strong> </p>
+        <p>Murdered: <strong><span id="killed_count"></span></strong> </p>
     </div>
     <div id="canvas">
         <p>You can find the code <a href="https://github.com/Blarc/crowd-evacuation" target="_blank">here</a>.</p>
@@ -49,29 +49,30 @@
             <label>Height <input id="height" type="number"/></label>
             <button id="sizeButton">Set</button></p>
         <div id="canvas-controls">
-            <p id="pause_resume">Pause: <strong>SPACE</strong></p>
-            <p>Set goal: <strong>G</strong></p>
             <p>Draw obstacles: <strong>D</strong></p>
             <p>Draw pedestrians: <strong>P</strong></p>
             <p>Draw assailant: <strong>A</strong></p>
-            <p>Save: <strong>S</strong></p>
-        </div>
-        <div id="canvas-controls">
-            <p>Reset simulation: <strong>R</strong></p>
-            <p id="use_global_and_local_goals">Follow global and local goals: <strong>U</strong></p>
-            <p>Show/hide pedestrian arcs: <strong>V</strong></p>
-            <p>Show/hide assailant arcs: <strong>K</strong></p>
-        </div>
-        <div id="canvas-controls">
-            <p>Frames: <strong><span id="frames"></span></strong> </p>
             <p>Draw pedestrians with custom goal: <strong>I</strong></p>
+        </div>
+        <div id="canvas-controls">
+            <p>Reset simulation count: <strong>R</strong></p>
+            <p id="use_global_and_local_goals">Follow global and local goals: <strong>U</strong></p>
+            <p><span id="show_hide_pedestrian"></span> pedestrian arcs: <strong>V</strong></p>
+            <p><span id="show_hide_assailant"></span> assailant arcs: <strong>K</strong></p>
+
+        </div>
+        <div id="canvas-controls">
+            <p><span id="pause_resume"></span>: <strong>SPACE</strong></p>
+            <p>Set goal: <strong>G</strong></p>
             <p>Erase: <strong>E</strong></p>
             <p>Clear: <strong>C</strong></p>
+            <p>Save: <strong>S</strong></p>
             <p>Size: <span id="size"></span></p>
         </div>
         <div id="canvas-controls">
-            <p id="num_pedestrians">Number of pedestrians: 0</p>
-            <p id="num_assailants">Number of assailants: 0</p>
+            <p>Pedestrians: <strong><span id="num_pedestrians"></span></strong> </p>
+            <p>Assailants: <strong><span id="num_assailants"></span></strong> </p>
+            <p>Frames: <strong><span id="frames"></span></strong> </p>
         </div>
     </div>
 </body>

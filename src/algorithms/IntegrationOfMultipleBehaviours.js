@@ -33,9 +33,9 @@ class IntegrationOfMultipleBehaviours {
                 if (d_g <= this.d.NEAR) {
                     return [this.delta.SMALL, this.delta.SMALL, this.delta.LARGE];
                 }
-                 else {
+                else {
                     return [this.delta.SMALL, this.delta.SMALL, this.delta.LARGE];
-                 }
+                }
             }
             // if negative energy high
             else {

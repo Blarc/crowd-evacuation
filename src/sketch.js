@@ -309,7 +309,7 @@ function drawMouse() {
                 for (let i = 0; i < size; i++) {
                     for (let j = 0; j < size; j++) {
 
-                        let newBlock = new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, Config.createWallColor);
+                        let newBlock = new VBlock(x + i * Config.blockSize, y + j * Config.blockSize, Config.createdWallColor);
                         let isOnSamePositionAsOneOfExistingBlocks = false;
                         for (let block of createdWalls) {
                             if (block.rect.hasSamePosition(newBlock)) {

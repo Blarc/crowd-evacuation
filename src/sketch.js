@@ -115,7 +115,7 @@ function draw() {
         if (vObject instanceof VHuman) {
             if (vObject.isAssailant) {
                 numberOfAssailants += 1;
-            } else {
+            } else if (vObject.isAlive) {
                 numberOfPedestrians += 1;
             }
         }

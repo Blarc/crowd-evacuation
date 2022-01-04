@@ -162,7 +162,7 @@ class VHuman extends VMovingObject{
                 }
             }
             // if there is no goal defined for simple pedestrians
-            else if (!useGlobalAndLocalGoals && this.category == 1) {
+            else if (!useGlobalAndLocalGoals && this.category === 1) {
                 V_g = this.goalSeeking.s.SLOW;
                 //simple room searching algorithm
                 if (random(0, 1) > 0.9) {

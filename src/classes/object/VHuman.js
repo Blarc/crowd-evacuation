@@ -184,15 +184,20 @@ class VHuman extends VMovingObject{
 
         if (this.integrationOfMultipleBehaviours) {
             let [a, V] = this.integrationOfMultipleBehaviours.getOutput(d_o_f, NE_f, d_g, a_o, a_p, a_g, V_o, V_p, V_g);
-            if (!this.isAssailant && this.category === 2) {
-                V = (1 - this.pathSearching.cf.K_P_CAT_2) * V + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
-            } else if (!this.isAssailant && this.category === 3) {
-                V = (1 - this.pathSearching.cf.K_P_CAT_3) * V + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
-            } else if (this.isAssailant && this.goal) {
-                V = this.pathSearching.s.MAX_SPEED;
+            if (V_o === this.obstacleAvoidance.s.STOP) {
+                angle = a_o;
+                velocity = V_o;
+            } else {
+                if (!this.isAssailant && this.category === 2) {
+                    V = (1 - this.pathSearching.cf.K_P_CAT_2) * V + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
+                } else if (!this.isAssailant && this.category === 3) {
+                    V = (1 - this.pathSearching.cf.K_P_CAT_3) * V + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
+                } else if (this.isAssailant && this.goal) {
+                    V = this.pathSearching.s.MAX_SPEED;
+                }
+                angle += a;
+                velocity += V;
             }
-            angle += a;
-            velocity += V;
         }
 
         this.rotate(angle);

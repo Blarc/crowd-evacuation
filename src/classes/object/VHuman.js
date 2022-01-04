@@ -147,16 +147,21 @@ class VHuman extends VMovingObject{
             if (!this.goal && this.isAssailant) {
                 V_g = this.goalSeeking.s.FAST;
                 //simple room searching algorithm
-                if (random(0, 1) > 0.5) {
-                    let newAngle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
+                if (random(0, 1) > 0.7) {
+                    let newAngle;
+                    if (this.prevGoalSeekingAngle === this.goalSeeking.a.SMALL_POS) {
+                        newAngle = random(0, 1) > 0.9 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
+                    } else {
+                        newAngle = random(0, 1) > 0.9 ? this.goalSeeking.a.SMALL_POS : this.goalSeeking.a.SMALL_NEG;
+                    }
                     a_g = newAngle;
+                    this.prevGoalSeekingAngle = a_g;
                 } else {
                     a_g = this.goalSeeking.a.ZERO;
                 }
-                this.prevGoalSeekingAngle = a_g;
             } 
             // if there is no goal defined for simple pedestrians
-            else if (!useGlobalAndLocalGoals && this.category == 1) {
+            else if (!Config.useGlobalAndLocalGoals && this.category == 1) {
                 V_g = this.goalSeeking.s.SLOW;
                 //simple room searching algorithm
                 if (random(0, 1) > 0.9) {
@@ -165,7 +170,6 @@ class VHuman extends VMovingObject{
                 } else {
                     a_g = this.goalSeeking.a.ZERO;
                 }
-                this.prevGoalSeekingAngle = a_g;
             }
             else if (!this.goal) {
                 [a_g, V_g] = this.goalSeeking.getOutput(this, globalGoal);
@@ -230,7 +234,7 @@ class VHuman extends VMovingObject{
         if (!this.isAssailant && 
             ((this.goal && p5.Vector.dist(this.pos, this.goal) < 5) || 
             (!this.goal && p5.Vector.dist(this.pos, globalGoal) < 5))) {
-                if (!evacuationMode && useGlobalAndLocalGoals) {
+                if (!evacuationMode && Config.useGlobalAndLocalGoals) {
                     this.pos.x = this.startingPos.x;
                     this.pos.y = this.startingPos.y;
                 } else if (evacuationMode) {

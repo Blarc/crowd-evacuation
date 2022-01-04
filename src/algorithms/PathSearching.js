@@ -49,7 +49,7 @@ class PathSearching {
 
                 for (let object of sector) {
 
-                    let intersection = object.isOuterWall ? [] : object.rect.getIntersection(line);
+                    let intersection = object.isOuterWall ? undefined : object.rect.getIntersection(line);
 
                     if (intersection) {
                         anyIntersection = true;

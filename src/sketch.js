@@ -6,7 +6,6 @@ let createdWalls = new Set();
 let baseVector;
 let pause = false;
 let globalGoal;
-let useGlobalAndLocalGoals = false;
 let evacuationMode = false;
 
 let globalSavedPeopleCounter = 0;
@@ -55,7 +54,7 @@ function setup(){
         document.getElementById('num_pedestrians').innerHTML = "Number of pedestrians: " + numberOfPedestrians;
         document.getElementById('num_assailants').innerHTML = "Number of assailants: " + numberOfAssailants;
         document.getElementById('pause_resume').innerHTML = pause ? "Resume: <strong>SPACE</strong>" : "Pause: <strong>SPACE</strong>";
-        document.getElementById('use_global_and_local_goals').innerHTML = useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
+        document.getElementById('use_global_and_local_goals').innerHTML = Config.useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
     }, 200);
 
 
@@ -221,6 +220,10 @@ function keyPressed() {
         case 73:
             mouseMode = ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL;
             return;
+        // K - show/hide pedestrian arcs
+        case 75:
+            Config.showAssailantArcs = !Config.showAssailantArcs;
+            return;
         // P - draw pedestrians
         case 80:
             mouseMode = ModeEnum.DRAW_PEDESTRIANS;
@@ -232,7 +235,11 @@ function keyPressed() {
             return;
         // U - follow unfollow global and local goals when not in pannic
         case 85:
-            useGlobalAndLocalGoals = !useGlobalAndLocalGoals;
+            Config.useGlobalAndLocalGoals = !Config.useGlobalAndLocalGoals;
+            return;
+        // V - show/hide pedestrian arcs
+        case 86:
+            Config.showPedestrianArcs = !Config.showPedestrianArcs;
             return;
         // S - save
         case 83:
@@ -333,7 +340,7 @@ function createWallBoundaries() {
 }
 
 function downloadMap() {
-    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals});
+    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals: Config.useGlobalAndLocalGoals, showAssailantArcs: Config.showAssailantArcs, showPedestrianArcs: Config.showPedestrianArcs});
     let a = document.createElement('a');
     let file = new Blob([data], {type: 'application/json'});
     a.href = URL.createObjectURL(file);
@@ -380,13 +387,15 @@ function readFile(e) {
     });
 
     parsed.walls.forEach(wall => {
-        let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, false);
+        let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, wall.isOuterWall);
         createdWalls.add(tmp);
     })
 
     globalGoal = createVector(parsed.globalGoalX, parsed.globalGoalY);
 
-    useGlobalAndLocalGoals = parsed.useGlobalAndLocalGoals;
+    Config.useGlobalAndLocalGoals = parsed.useGlobalAndLocalGoals;
+    Config.showAssailantArcs = parsed.showAssailantArcs;
+    Config.showPedestrianArcs = parsed.showPedestrianArcs;
 
     fileUploader.value = null;
 }

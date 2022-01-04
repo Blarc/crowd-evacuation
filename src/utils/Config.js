@@ -6,9 +6,12 @@ class Config {
     static objectSize = 5;
     static numberOfObjects = 0;
     static debug = true;
+    static showPedestrianArcs = false;
+    static showAssailantArcs = true;
+    static useGlobalAndLocalGoals = false;
     static showLines = false;
 
-    static numberOfControlLines = 10;
+    static numberOfControlLines = 4;
     static arcSize = 20;
 
 

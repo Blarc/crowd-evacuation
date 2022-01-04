@@ -6,7 +6,7 @@ class VObject {
 
     toJSON() {
         return {
-            pos: {x: this.pos.x, y: this.pos.y}
+            pos: {x: this.pos.x, y: this.pos.y, isOuterWall: this.isOuterWall}
         }
     }
 }

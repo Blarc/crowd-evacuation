@@ -29,7 +29,7 @@ class VArc {
             heading + this.endVisionAngle
         );
 
-        if (Config.showLines) {
+        if (showLines) {
             let arcLines = this.getArcLines(direction)
             for (let arcLine of arcLines) {
                 arcLine.show(255);

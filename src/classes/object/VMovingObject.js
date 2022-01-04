@@ -28,7 +28,7 @@ class VMovingObject extends VObject {
         ellipse(this.pos.x, this.pos.y, this.size);
 
         // Put all debugging visuals in this if-statement
-        if (this.isAssailant && Config.showAssailantArcs || !this.isAssailant && Config.showPedestrianArcs) {
+        if (this.isAssailant && showAssailantArcs || !this.isAssailant && showPedestrianArcs) {
             if (this.velocity.x !== 0 || this.velocity.y !== 0) {
                 this.visionArcs.forEach(arc => {
                     arc.show(this.velocity);

@@ -10,8 +10,8 @@ class VHuman extends VMovingObject{
         } else {
             this.goal = undefined
         }
-        // TODO: Category has to be changed dynamically, based on assailants in the room
         this.category = 1;
+        this.categorySwitchProbability = random(0.2, 0.6);
         this.pickedHuman = undefined;
         this.isAlive = true;
         if (this.isAssailant) {
@@ -56,6 +56,10 @@ class VHuman extends VMovingObject{
             if (!vObjects.includes(this.pickedHuman) || !this.pickedHuman.isAlive) {
                 this.goal = undefined;
             }
+        }
+
+        if (this.category === 3 && random(0, 1) > this.categorySwitchProbability) {
+            this.category = 2;
         }
 
         for (let point of points) {
@@ -135,9 +139,6 @@ class VHuman extends VMovingObject{
         let a_o, V_o, a_p, V_p, NE_f, a_g, V_g, d_g = 0;
         let d_o_f = distancesByArc[2];
 
-        // TODO @martinb: there is probability, that human will go back to category 2
-        // if (random(0, 1))
-
         if (this.obstacleAvoidance) {
             [a_o, V_o] = this.obstacleAvoidance.getOutput(distancesByArc);
         }
@@ -161,7 +162,7 @@ class VHuman extends VMovingObject{
                 }
             }
             // if there is no goal defined for simple pedestrians
-            else if (!Config.useGlobalAndLocalGoals && this.category === 1) {
+            else if (!useGlobalAndLocalGoals && this.category == 1) {
                 V_g = this.goalSeeking.s.SLOW;
                 //simple room searching algorithm
                 if (random(0, 1) > 0.9) {
@@ -238,7 +239,7 @@ class VHuman extends VMovingObject{
         if (!this.isAssailant &&
             ((this.goal && p5.Vector.dist(this.pos, this.goal) < 5) ||
             (!this.goal && p5.Vector.dist(this.pos, globalGoal) < 5))) {
-                if (!evacuationMode && Config.useGlobalAndLocalGoals) {
+                if (!evacuationMode && useGlobalAndLocalGoals) {
                     this.pos.x = this.startingPos.x;
                     this.pos.y = this.startingPos.y;
                 } else if (evacuationMode) {

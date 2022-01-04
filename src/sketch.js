@@ -8,6 +8,11 @@ let pause = false;
 let evacuationMode = false;
 let currentSimulation;
 
+let showPedestrianArcs = true;
+let showAssailantArcs = true;
+let useGlobalAndLocalGoals = true;
+let showLines = false;
+
 let globalSavedPeopleCounter = 0;
 let globalDeathTollCounter = 0;
 let numberOfPedestrians = 0;
@@ -54,9 +59,9 @@ function setup(){
         document.getElementById('num_pedestrians').innerHTML = numberOfPedestrians;
         document.getElementById('num_assailants').innerHTML = numberOfAssailants;
         document.getElementById('pause_resume').innerHTML = pause ? "Resume" : "Pause";
-        document.getElementById('show_hide_pedestrian').innerHTML = Config.showPedestrianArcs ? "Hide" : "Show";
-        document.getElementById('show_hide_assailant').innerHTML = Config.showAssailantArcs ? "Hide" : "Show";
-        document.getElementById('use_global_and_local_goals').innerHTML = Config.useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
+        document.getElementById('show_hide_pedestrian').innerHTML = showPedestrianArcs ? "Hide" : "Show";
+        document.getElementById('show_hide_assailant').innerHTML = showAssailantArcs ? "Hide" : "Show";
+        document.getElementById('use_global_and_local_goals').innerHTML = useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
     }, 200);
 
 
@@ -223,7 +228,7 @@ function keyPressed() {
             return;
         // K - show/hide pedestrian arcs
         case 75:
-            Config.showAssailantArcs = !Config.showAssailantArcs;
+            showAssailantArcs = !showAssailantArcs;
             return;
         // P - draw pedestrians
         case 80:
@@ -235,11 +240,11 @@ function keyPressed() {
             return;
         // U - follow unfollow global and local goals when not in pannic
         case 85:
-            Config.useGlobalAndLocalGoals = !Config.useGlobalAndLocalGoals;
+            useGlobalAndLocalGoals = !useGlobalAndLocalGoals;
             return;
         // V - show/hide pedestrian arcs
         case 86:
-            Config.showPedestrianArcs = !Config.showPedestrianArcs;
+            showPedestrianArcs = !showPedestrianArcs;
             return;
         // S - save
         case 83:
@@ -336,7 +341,7 @@ function createWallBoundaries() {
 }
 
 function downloadMap() {
-    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals: Config.useGlobalAndLocalGoals, showAssailantArcs: Config.showAssailantArcs, showPedestrianArcs: Config.showPedestrianArcs});
+    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals: useGlobalAndLocalGoals, showAssailantArcs: showAssailantArcs, showPedestrianArcs: showPedestrianArcs});
     let a = document.createElement('a');
     let file = new Blob([data], {type: 'application/json'});
     a.href = URL.createObjectURL(file);
@@ -396,9 +401,9 @@ function setSimulation() {
 
     globalGoal = createVector(currentSimulation.globalGoalX, currentSimulation.globalGoalY);
 
-    Config.useGlobalAndLocalGoals = currentSimulation.useGlobalAndLocalGoals;
-    Config.showAssailantArcs = currentSimulation.showAssailantArcs;
-    Config.showPedestrianArcs = currentSimulation.showPedestrianArcs;
+    useGlobalAndLocalGoals = currentSimulation.useGlobalAndLocalGoals;
+    showAssailantArcs = currentSimulation.showAssailantArcs;
+    showPedestrianArcs = currentSimulation.showPedestrianArcs;
 }
 
 function onSizeChange(e) {

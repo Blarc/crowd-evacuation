@@ -3,10 +3,10 @@ let vObjects = [];
 let walls = [];
 let createdWalls = new Set();
 
-let baseVector;
-let pause = false;
 let globalGoal;
+let pause = false;
 let evacuationMode = false;
+let currentSimulation;
 
 let globalSavedPeopleCounter = 0;
 let globalDeathTollCounter = 0;
@@ -59,7 +59,6 @@ function setup(){
 
 
     mouseMode = ModeEnum.SET_GOAL;
-    baseVector = createVector(1, 0);
     globalGoal = createVector(random(50, width - 50), random(50, height - 50))
 
     // Create quadtree as big as the room
@@ -228,10 +227,9 @@ function keyPressed() {
         case 80:
             mouseMode = ModeEnum.DRAW_PEDESTRIANS;
             return;
-        // R - reset counters
+        // R - reset simulation
         case 82:
-            globalSavedPeopleCounter = 0;
-            globalDeathTollCounter = 0;
+            setSimulation();
             return;
         // U - follow unfollow global and local goals when not in pannic
         case 85:
@@ -356,16 +354,23 @@ function uploadMap() {
 }
 
 function readFile(e) {
+    currentSimulation = JSON.parse(e.target.result);
+    setSimulation();
+    fileUploader.value = null;
+}
+
+function setSimulation() {
     pause = true;
     evacuationMode = false;
     globalSavedPeopleCounter = 0;
     globalDeathTollCounter = 0;
 
-    let parsed = JSON.parse(e.target.result);
+    if (!currentSimulation) {
+        return;
+    }
 
-    setSize(parsed.width, parsed.height);
-
-    parsed.vObjects.forEach(vObject => {
+    setSize(currentSimulation.width, currentSimulation.height);
+    currentSimulation.vObjects.forEach(vObject => {
         vObjects.push(
             new VHuman(
                 vObject.pos.x,
@@ -386,18 +391,16 @@ function readFile(e) {
         }
     });
 
-    parsed.walls.forEach(wall => {
+    currentSimulation.walls.forEach(wall => {
         let tmp = new VBlock(wall.pos.x, wall.pos.y, Config.basicWallColor, wall.isOuterWall);
         createdWalls.add(tmp);
     })
 
-    globalGoal = createVector(parsed.globalGoalX, parsed.globalGoalY);
+    globalGoal = createVector(currentSimulation.globalGoalX, currentSimulation.globalGoalY);
 
-    Config.useGlobalAndLocalGoals = parsed.useGlobalAndLocalGoals;
-    Config.showAssailantArcs = parsed.showAssailantArcs;
-    Config.showPedestrianArcs = parsed.showPedestrianArcs;
-
-    fileUploader.value = null;
+    Config.useGlobalAndLocalGoals = currentSimulation.useGlobalAndLocalGoals;
+    Config.showAssailantArcs = currentSimulation.showAssailantArcs;
+    Config.showPedestrianArcs = currentSimulation.showPedestrianArcs;
 }
 
 function onSizeChange(e) {

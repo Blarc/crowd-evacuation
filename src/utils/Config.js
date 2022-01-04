@@ -16,6 +16,7 @@ class Config {
 
 
     static basicWallColor = '#BC4A3C';
+    static createdWallColor = '#FF0000';
     static deadHumanColor = "#FF0000"; //red
     static assailantColor = "#008000" //green
     static blockSize = 20;

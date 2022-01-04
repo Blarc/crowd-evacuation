@@ -93,7 +93,7 @@ class VHuman extends VMovingObject{
 
                         if (this.isAssailant && other.isAlive) {
                             //if we don't see picked human anymore, that means human managed to escape assailant
-                            if (other == this.pickedHuman) {
+                            if (other === this.pickedHuman) {
                                 foundHumanPickedForGoal = true;
                             }
 
@@ -159,14 +159,13 @@ class VHuman extends VMovingObject{
                 } else {
                     a_g = this.goalSeeking.a.ZERO;
                 }
-            } 
+            }
             // if there is no goal defined for simple pedestrians
-            else if (!Config.useGlobalAndLocalGoals && this.category == 1) {
+            else if (!Config.useGlobalAndLocalGoals && this.category === 1) {
                 V_g = this.goalSeeking.s.SLOW;
                 //simple room searching algorithm
                 if (random(0, 1) > 0.9) {
-                    let newAngle = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
-                    a_g = newAngle;
+                    a_g = random(0, 1) > 0.5 ? this.goalSeeking.a.SMALL_NEG : this.goalSeeking.a.SMALL_POS;
                 } else {
                     a_g = this.goalSeeking.a.ZERO;
                 }
@@ -236,8 +235,8 @@ class VHuman extends VMovingObject{
     }
 
     checkGoal() {
-        if (!this.isAssailant && 
-            ((this.goal && p5.Vector.dist(this.pos, this.goal) < 5) || 
+        if (!this.isAssailant &&
+            ((this.goal && p5.Vector.dist(this.pos, this.goal) < 5) ||
             (!this.goal && p5.Vector.dist(this.pos, globalGoal) < 5))) {
                 if (!evacuationMode && Config.useGlobalAndLocalGoals) {
                     this.pos.x = this.startingPos.x;

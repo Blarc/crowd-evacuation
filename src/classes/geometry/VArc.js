@@ -110,7 +110,19 @@ class VArc {
         let arcLines = this.getArcLines(direction);
         let rectangleLines = rectangle.getRectLines();
 
-        let intersection = null
+        //will use this for now, cause it's much quicker and it works
+        for (let arcLine of arcLines) {
+            for (let rectangleLine of rectangleLines) {
+                let intersectionVector = arcLine.intersection(rectangleLine)
+                if (intersectionVector) {
+                    return intersectionVector;
+                }
+            }
+        }
+
+        return null;
+
+        /*let intersection = null
         let intersectionDistance = this.visionSize;
 
         for (let rectangleLine of rectangleLines) {
@@ -139,7 +151,8 @@ class VArc {
             }
         }
 
-        return intersection;
+        return intersection;*/
+        
     }
 
     /**

@@ -18,6 +18,7 @@ class VHuman extends VMovingObject{
             this.color = Config.assailantColor;
             this.prevGoalSeekingAngle = goalSeeking.a.ZERO;
         }
+        this.stuckCounter = 0;
     }
 
     toJSON() {
@@ -187,23 +188,44 @@ class VHuman extends VMovingObject{
             if (V_o === this.obstacleAvoidance.s.STOP) {
                 angle = a_o;
                 velocity = V_o;
+                this.stuckCounter += 1;
             } else {
                 if (!this.isAssailant && this.category === 2) {
                     V = (1 - this.pathSearching.cf.K_P_CAT_2) * V + this.pathSearching.cf.K_P_CAT_2 * this.pathSearching.s.MAX_SPEED;
                 } else if (!this.isAssailant && this.category === 3) {
                     V = (1 - this.pathSearching.cf.K_P_CAT_3) * V + this.pathSearching.cf.K_P_CAT_3 * this.pathSearching.s.MAX_SPEED;
-                } else if (this.isAssailant && this.goal) {
+                } else if (this.isAssailant && this.goal && V_o === this.obstacleAvoidance.s.FAST) {
                     V = this.pathSearching.s.MAX_SPEED;
                 }
                 angle += a;
                 velocity += V;
+
+                this.stuckCounter = 0;
             }
         }
 
-        this.rotate(angle);
-        this.setSpeed(velocity);
+        if (this.stuckCounter > 4) {
+            let tmpPoints = quadTree.query(new Circle(this.pos.x, this.pos.y, Config.blockSize));
 
-        this.pos.add(this.velocity.copy().setMag(this.velocityMag));
+            for (let point of tmpPoints) {
+                let other = point.userData;
+
+                if (other instanceof VBlock) {
+                    let closestPosition = other.rect.getNearestPositionNear(this);
+
+                    this.pos.x = closestPosition[0];
+                    this.pos.y = closestPosition[1];
+                    this.stuckCounter = 0;
+                    break;
+                }
+
+            }
+        } else {
+            this.rotate(angle);
+            this.setSpeed(velocity);
+
+            this.pos.add(this.velocity.copy().setMag(this.velocityMag));
+        }
 
     }
 

@@ -78,6 +78,40 @@ class VRect {
         return nearestPoint;
     }
 
+    getNearestPositionNear(object) {
+        let nearestPoint;
+        let shortestDistance = Infinity;
+        let nearestPointIdx = 0;
+        let idx = 0;
+
+        let points = [this.upperLeftCorner(), this.upperRightCorner(), this.bottomLeftCorner(), this.bottomRightCorner()]
+
+        for (let point of points) {
+
+            let curDistance = p5.Vector.dist(object.pos, point);
+            if (curDistance < shortestDistance) {
+                shortestDistance = curDistance;
+                nearestPoint = point;
+                nearestPointIdx = idx;
+            }
+
+            idx += 1;
+        }
+
+        if (nearestPointIdx == 0) {
+            return [nearestPoint.x - 2, nearestPoint.y - 2];
+        } 
+        else if (nearestPointIdx == 1) {
+            return [nearestPoint.x + 2, nearestPoint.y - 2];
+        }
+        else if (nearestPointIdx == 2) {
+            return [nearestPoint.x - 2, nearestPoint.y + 2];
+        }
+        else if (nearestPointIdx == 3) {
+            return [nearestPoint.x + 2, nearestPoint.y + 2];
+        }
+    }
+
     bottomRightCorner() {
         return createVector(this.pos.x + this.width / 2, this.pos.y + this.height / 2);
     }

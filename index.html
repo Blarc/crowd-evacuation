@@ -43,7 +43,11 @@
     </div>
     <div id="canvas">
         <p>You can find the code <a href="https://github.com/Blarc/crowd-evacuation" target="_blank">here</a>.</p>
-        <p><input type="file" accept="application/json" id="upload"/></p>
+        <div id="canvas-controls">
+            <p><input type="file" accept="application/json" id="upload"/></p>
+            <p>Run simulations:<input type="checkbox"  id="run_simulation"></p>
+            <p>Download simulations: <strong>T</strong></p>
+        </div>
         <p>
             <label>Width <input id="width" type="number"/></label>
             <label>Height <input id="height" type="number"/></label>
@@ -72,6 +76,7 @@
         <div id="canvas-controls">
             <p>Pedestrians: <strong><span id="num_pedestrians"></span></strong> </p>
             <p>Assailants: <strong><span id="num_assailants"></span></strong> </p>
+            <p>Time: <strong><span id="time"></span> s</strong> </p>
             <p>Frames: <strong><span id="frames"></span></strong> </p>
         </div>
     </div>

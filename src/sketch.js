@@ -1,6 +1,8 @@
 let quadTree;
-let vObjects = [];
+
 let walls = [];
+let vObjects = new Set();
+let vKilledObjects = new Set();
 let createdWalls = new Set();
 
 let globalGoal;
@@ -14,11 +16,16 @@ let useGlobalAndLocalGoals = true;
 let showLines = false;
 
 let globalSavedPeopleCounter = 0;
-let globalDeathTollCounter = 0;
 let numberOfPedestrians = 0;
 let numberOfAssailants = 0;
 
+let startTime = 0;
+let pauseTime = 0;
+
 let mouseMode;
+let runSimulations = false
+let simulation = []
+let simulations = []
 
 // Dom elements
 let canvas, sizeSlider, fileUploader, fileReader, widthInput, heightInput, sizeButton;
@@ -52,17 +59,34 @@ function createUI() {
 function setup(){
 
     createUI();
+
+    document.getElementById('run_simulation').addEventListener('input', e => {
+        runSimulations = !runSimulations;
+    })
+
     setInterval(() => {
         document.getElementById('frames').innerHTML = round(frameRate(), 2);
         document.getElementById('survivors_count').innerHTML = globalSavedPeopleCounter;
-        document.getElementById('killed_count').innerHTML = globalDeathTollCounter;
-        document.getElementById('num_pedestrians').innerHTML = numberOfPedestrians;
+        document.getElementById('killed_count').innerHTML = vKilledObjects.size;
+        document.getElementById('num_pedestrians').innerHTML = vObjects.size - numberOfAssailants;
         document.getElementById('num_assailants').innerHTML = numberOfAssailants;
+        document.getElementById('time').innerHTML = pause ?  round(pauseTime / 1000, 2) : round((millis() - (startTime - pauseTime)) / 1000, 2);
         document.getElementById('pause_resume').innerHTML = pause ? "Resume" : "Pause";
         document.getElementById('show_hide_pedestrian').innerHTML = showPedestrianArcs ? "Hide" : "Show";
         document.getElementById('show_hide_assailant').innerHTML = showAssailantArcs ? "Hide" : "Show";
         document.getElementById('use_global_and_local_goals').innerHTML = useGlobalAndLocalGoals ? "Unfollow global and local goals: <strong>U</strong>" : "Follow global and local goals: <strong>U</strong>";
-    }, 200);
+    }, 300);
+
+    setInterval(() => {
+        if (runSimulations && !pause) {
+            simulation.push({
+                numberOfPedestrians: (vObjects.size - numberOfAssailants),
+                numberOfAssailants,
+                killed: vKilledObjects.size,
+                saved: globalSavedPeopleCounter
+            })
+        }
+    }, 1000)
 
 
     mouseMode = ModeEnum.SET_GOAL;
@@ -88,15 +112,13 @@ function setup(){
         let y = random(50, height - 50);
 
         let vObject = new VHuman(x, y, Config.visionSize, obstacleAvoidance, goalSeeking, pathSearching, integrationOfMultipleBehaviours);
-        vObjects.push(vObject);
+        vObjects.add(vObject);
     }
 
     this.createWallBoundaries();
 }
 
 function draw() {
-    numberOfPedestrians = 0;
-    numberOfAssailants = 0;
     quadTree = QuadTree.create();
     background(51);
 
@@ -117,17 +139,32 @@ function draw() {
         cWall.show();
     }
 
+    for (let vKilledObject of vKilledObjects) {
+        vKilledObject.show();
+    }
+
+    numberOfAssailants = 0;
     for (let vObject of vObjects) {
         if (vObject instanceof VHuman) {
             if (vObject.isAssailant) {
                 numberOfAssailants += 1;
-            } else if (vObject.isAlive) {
-                numberOfPedestrians += 1;
             }
         }
 
         vObject.show();
         !pause && vObject.update();
+    }
+
+    if (vObjects.size === numberOfAssailants && !pause) {
+        if (runSimulations) {
+            simulations.push(simulation);
+            simulation = []
+            setSimulation();
+            console.log(simulations)
+        }
+        else {
+            pauseIt();
+        }
     }
 
     drawMouse();
@@ -143,7 +180,7 @@ function mousePressed() {
 
             case ModeEnum.DRAW_PEDESTRIAN_WITH_GOAL:
                 if (curPedestrianPosition !== undefined) {
-                    vObjects.push(
+                    vObjects.add(
                         new VHuman(
                             curPedestrianPosition.x,
                             curPedestrianPosition.y,
@@ -161,7 +198,7 @@ function mousePressed() {
                 return;
 
             case ModeEnum.DRAW_PEDESTRIANS:
-                vObjects.push(
+                vObjects.add(
                     new VHuman(
                         mouseX,
                         mouseY,
@@ -176,7 +213,7 @@ function mousePressed() {
 
             case ModeEnum.DRAW_ASSAILANTS:
                 evacuationMode = true;
-                vObjects.push(
+                vObjects.add(
                         new VHuman(
                         mouseX,
                         mouseY,
@@ -195,20 +232,39 @@ function mousePressed() {
     }
 }
 
+function pauseIt() {
+    pause = true;
+    pauseTime = millis() - (startTime - pauseTime);
+}
+
+function unpauseIt() {
+    pause = false;
+    startTime = millis();
+}
+
+function clearSimulation() {
+    createdWalls = new Set();
+    vObjects = new Set();
+    vKilledObjects = new Set();
+    startTime = 0;
+    pauseTime = 0;
+    evacuationMode = false;
+    globalSavedPeopleCounter = 0;
+}
+
 function keyPressed() {
     switch (keyCode) {
         // SPACE - pause
         case 32:
-            pause = !pause;
+            pause ? unpauseIt() : pauseIt()
             return;
         // A - draw assailants
         case 65:
             mouseMode = ModeEnum.DRAW_ASSAILANTS;
             return;
-        // C - clear
+        // C - reset
         case 67:
-            createdWalls = new Set();
-            vObjects = [];
+            clearSimulation();
             return;
         // D - draw
         case 68:
@@ -237,6 +293,10 @@ function keyPressed() {
         // R - reset simulation
         case 82:
             setSimulation();
+            return;
+        // T - download simulations
+        case 84:
+            downloadSimulations();
             return;
         // U - follow unfollow global and local goals when not in pannic
         case 85:
@@ -281,8 +341,8 @@ function drawMouse() {
                     if (object instanceof VBlock && createdWalls.has(object)) {
                         createdWalls.delete(object);
                     }
-                    if (object instanceof VHuman && vObjects.includes(object)) {
-                        vObjects.splice(vObjects.indexOf(object), 1);
+                    if (object instanceof VHuman && vObjects.has(object)) {
+                        vObjects.delete(object);
                     }
                 }
             }
@@ -340,12 +400,21 @@ function createWallBoundaries() {
     }
 }
 
+function downloadSimulations() {
+    let data = JSON.stringify(simulations);
+    download(data, 'simulations.json');
+}
+
 function downloadMap() {
-    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects, globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals: useGlobalAndLocalGoals, showAssailantArcs: showAssailantArcs, showPedestrianArcs: showPedestrianArcs});
+    let data = JSON.stringify({width: width, height: height, walls: [...createdWalls], vObjects: [...vObjects], globalGoalX: globalGoal.x, globalGoalY: globalGoal.y, useGlobalAndLocalGoals: useGlobalAndLocalGoals, showAssailantArcs: showAssailantArcs, showPedestrianArcs: showPedestrianArcs});
+    download(data, 'save.json');
+}
+
+function download(data, name) {
     let a = document.createElement('a');
     let file = new Blob([data], {type: 'application/json'});
     a.href = URL.createObjectURL(file);
-    a.download = 'save.json';
+    a.download = name;
     a.click();
 }
 
@@ -354,6 +423,7 @@ function uploadMap() {
     if (file.type === 'application/json') {
         fileReader.readAsText(file);
     }
+    simulations = []
 }
 
 function readFile(e) {
@@ -363,10 +433,7 @@ function readFile(e) {
 }
 
 function setSimulation() {
-    pause = true;
-    evacuationMode = false;
-    globalSavedPeopleCounter = 0;
-    globalDeathTollCounter = 0;
+    clearSimulation();
 
     if (!currentSimulation) {
         return;
@@ -374,7 +441,7 @@ function setSimulation() {
 
     setSize(currentSimulation.width, currentSimulation.height);
     currentSimulation.vObjects.forEach(vObject => {
-        vObjects.push(
+        vObjects.add(
             new VHuman(
                 vObject.pos.x,
                 vObject.pos.y,
@@ -416,7 +483,7 @@ function setSize(newWidth, newHeight) {
     resizeCanvas(newWidth, newHeight);
     walls = [];
     createdWalls = new Set();
-    vObjects = [];
+    vObjects = new Set();
     globalGoal = createVector(random(50, width - 50), random(50, height - 50))
     createWallBoundaries();
 }

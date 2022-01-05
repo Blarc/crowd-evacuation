@@ -13,7 +13,7 @@ class VHuman extends VMovingObject{
         this.category = 1;
         this.categorySwitchProbability = random(0.2, 0.6);
         this.pickedHuman = undefined;
-        this.isAlive = true;
+
         if (this.isAssailant) {
             this.color = Config.assailantColor;
             this.prevGoalSeekingAngle = goalSeeking.a.ZERO;
@@ -33,13 +33,6 @@ class VHuman extends VMovingObject{
     }
 
     update() {
-        if (!this.isAlive) {
-            this.color = Config.deadHumanColor;
-            this.velocity.x = 0.0;
-            this.velocity.y = 0.0;
-            return;
-        }
-
         this.checkGoal();
 
         let points = quadTree.query(this.getRange());
@@ -54,7 +47,7 @@ class VHuman extends VMovingObject{
         if (this.isAssailant) {
             curNearestHuman = undefined;
             curShortestDistance = Infinity;
-            if (!vObjects.includes(this.pickedHuman) || !this.pickedHuman.isAlive) {
+            if (!vObjects.has(this.pickedHuman)) {
                 this.goal = undefined;
             }
         }
@@ -96,7 +89,7 @@ class VHuman extends VMovingObject{
                             distancesByArc[arc.label.id] = distance;
                         }
 
-                        if (this.isAssailant && other.isAlive) {
+                        if (this.isAssailant) {
                             //if we don't see picked human anymore, that means human managed to escape assailant
                             if (other === this.pickedHuman) {
                                 foundHumanPickedForGoal = true;
@@ -108,10 +101,15 @@ class VHuman extends VMovingObject{
                             }
 
                             if (other === this.pickedHuman && distance < Config.objectSize * 2) {
-                                other.isAlive = false;
+                                other.color = Config.deadHumanColor;
+                                other.velocity.x = 0.0;
+                                other.velocity.y = 0.0;
+
                                 this.pickedHuman = undefined;
                                 this.goal = undefined;
-                                globalDeathTollCounter += 1;
+
+                                vKilledObjects.add(other);
+                                vObjects.delete(other);
                             }
                         }
 
@@ -266,7 +264,7 @@ class VHuman extends VMovingObject{
                     this.pos.y = this.startingPos.y;
                 } else if (evacuationMode) {
                     globalSavedPeopleCounter += 1;
-                    vObjects.splice(vObjects.indexOf(this), 1);
+                    vObjects.delete(this);
                 }
         }
     }

@@ -38,8 +38,7 @@ clone https://github.com/Blarc/crowd-evacuation.git
 ```
 and open `index.html` in your favourite browser **or** run it on a local server:
 ```bash
-cd fri-staff-visualization
-
+cd crowd-evacuation
 # for python3
 python -m http.server
 ```

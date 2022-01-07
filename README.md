@@ -9,8 +9,6 @@ killed or heavily damaged. With hope to decrease the casualties of such attacks,
 a crowd evacuation simulation that uses fuzzy logic to simulate the movement of people
 and assailants in different rooms.
 
-<<<<<<< HEAD
-=======
 First we prepare models for achieving specific goals: obstacle avoidance, path
 searching and goal seeking. We then integrate these models together by setting a weight
 for each of the models, which determines how much each of the models affects the object's
@@ -18,7 +16,6 @@ movement. We test the algorithm by simulating evacuation in different rooms that
 prepared in advance. For better understanding of the simulation and creation of
 different rooms, user interface is implemented.
 
->>>>>>> 78dd11da8b6ff778f5783223a155a6544999557b
 The article and implementation is based on existing article: *Zhou, Min & Dong, Hairong & Wen,
 Ding & Yao, Xiuming & Sun, Xubin. (2016). Modeling of Crowd Evacuation With Assailants via a
 Fuzzy Logic Approach. IEEE Transactions on Intelligent Transportation Systems*, which can be
@@ -31,12 +28,9 @@ The repository contains the following folders:
 - `results` contains different simulations' results
 - `src` contains the code
 
-<<<<<<< HEAD
-=======
 ## Live demo
 Live demo is deployed via GitHub pages and is available [here](https://blarc.github.io/crowd-evacuation/).
 
->>>>>>> 78dd11da8b6ff778f5783223a155a6544999557b
 ## Running locally
 To run the visualization locally you just have to clone the repo
 ```bash
@@ -50,10 +44,9 @@ python -m http.server
 ```
 For different ways of setting up a local server you can check out [link](https://github.com/processing/p5.js/wiki/Local-server).
 
-<<<<<<< HEAD
 ## Live demo
 Live demo can be seen [here](https://blarc.github.io/crowd-evacuation/).
-=======
+
 ## User interface
 For creating rooms and running simulations you either have to upload a saved configuration or
 create your own. Some saved configurations are saved in folder `maps`. If you would like to
@@ -84,7 +77,6 @@ enabled via keyboard:
 - **Choose file** - upload saved simulation configuration
 - **Run simulations** - automatically resets simulation when there is no pedestrians left in the room and saves statistics each second
 - **T** - download simulation statistics
->>>>>>> 78dd11da8b6ff778f5783223a155a6544999557b
 
 ## Acknowledgments
 External libraries have been used for the visualization:

@@ -25,6 +25,7 @@ found [here](https://ieeexplore.ieee.org/document/7442132).
 The repository contains the following folders:
 - `article` contains the latex files and the article in pdf
 - `maps` contains saved simulation rooms
+- `presentation` contains video and ppt presentation
 - `results` contains different simulations' results
 - `src` contains the code
 
